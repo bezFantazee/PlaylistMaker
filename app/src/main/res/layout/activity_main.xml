@@ -13,16 +13,18 @@
         android:text = "@string/play_list_make"
         android:textColor="@color/white"
         android:textSize="@dimen/standart_text_size"
+        android:layout_marginStart="@dimen/title_margin_start"
+        android:layout_marginTop="@dimen/title_margin_top"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginTop="44dp"
         android:layout_marginBottom="@dimen/big_margin"
-        android:layout_marginStart="@dimen/button_margin_horisontal"
-        android:layout_marginEnd="@dimen/button_margin_horisontal"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
         >
 
         <LinearLayout
@@ -110,6 +112,10 @@
 
 
 </LinearLayout>
+
+
+
+
 
 
 

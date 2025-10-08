@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="standart_text_size">26sp</dimen>
+    <dimen name="title_margin_top">14dp</dimen>
+    <dimen name="title_margin_start">16dp</dimen>
+    <dimen name="standart_text_size">22sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
-    <dimen name="very_small_text">13sp</dimen>
+    <dimen name="very_small_text">12sp</dimen>
     <dimen name="distance_after_icon">10dp</dimen>
     <dimen name="small_margin">16dp</dimen>
     <dimen name="standart_margin">20dp</dimen>
     <dimen name="big_margin">24dp</dimen>
-    <dimen name="icon_size">26dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
     <dimen name="button_margin_horisontal">48dp</dimen>
     <dimen name="setting_height">55dp</dimen>
     <dimen name="big_icon_size">120dp</dimen>

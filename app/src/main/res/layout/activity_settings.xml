@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/title_margin_top"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
@@ -20,12 +20,12 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             app:srcCompat="@drawable/arrow"
-            android:layout_marginStart="12dp"/>
+            android:layout_marginStart="@dimen/title_margin_start"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:text="@string/settings"
             android:textSize="@dimen/standart_text_size"
             android:textStyle="bold"
@@ -34,7 +34,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="61dp"
         android:layout_marginTop="40dp"
         android:gravity="center_vertical"
         >
@@ -49,16 +49,16 @@
             />
 
         <androidx.appcompat.widget.SwitchCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_width="56dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="6dp"
             />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="61dp"
         android:gravity="center_vertical"
         >
         <TextView
@@ -75,14 +75,14 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             app:srcCompat = "@drawable/share"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginEnd="12dp"
             />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="61dp"
         android:gravity="center_vertical"
         >
         <TextView
@@ -96,17 +96,17 @@
             />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
+            android:layout_width="20dp"
+            android:layout_height="18dp"
             app:srcCompat = "@drawable/support"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginEnd="14dp"
             />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="61dp"
         android:gravity="center_vertical"
         >
         <TextView
@@ -120,13 +120,12 @@
             />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
+            android:layout_width="8dp"
+            android:layout_height="14dp"
             app:srcCompat = "@drawable/arrow2"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginEnd="18dp"
             />
 
     </LinearLayout>
-
-
 </LinearLayout>
+

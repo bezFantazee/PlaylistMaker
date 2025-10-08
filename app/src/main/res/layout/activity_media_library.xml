@@ -13,15 +13,15 @@
         android:textSize="@dimen/standart_text_size"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/title_margin_start"
+        android:layout_marginTop="@dimen/title_margin_top"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="2"
-        android:layout_marginTop="@dimen/standart_margin">
+        android:layout_marginTop="32dp">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/featured_tracks"
                 android:textColor="@color/black"
-                android:textSize="@dimen/small_text_size"
+                android:textSize="14sp"
                 />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/black"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginTop="14dp"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
                 />
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/playlists"
-                android:textSize="@dimen/small_text_size"
+                android:textSize="14sp"
                 android:textColor="@color/black"
                 />
         </LinearLayout>
@@ -73,16 +73,16 @@
             android:layout_width="@dimen/big_icon_size"
             android:layout_height="@dimen/big_icon_size"
             app:srcCompat="@drawable/empty_media_library_icon"
-            android:layout_marginTop="@dimen/big_icon_size"
+            android:layout_marginTop="106dp"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_media_library"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="19sp"
             android:textStyle="bold"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="16dp"
             />
     </LinearLayout>
 

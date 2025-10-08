@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Playlist Maker</string>
-    <string name="play_list_make">PlayList make</string>
+    <string name="play_list_make">Playlist maker</string>
     <string name="search">Поиск</string>
     <string name="media_library">Медиатека</string>
     <string name="settings">Настройки</string>
@@ -11,4 +11,12 @@
     <string name="featured_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
     <string name="empty_media_library">Ваша медиатека пуста</string>
+    <string name="url_for_share">https://practicum.yandex.ru/profile/android-developer/</string>
+    <string name="theme_for_email_to_support">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="start_message_for_email_to_support">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="support_address">davydovaksenia529@yandex.com</string>
+    <string name="url_user_agreement">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="send_intent_type">text/plan</string>
+    <string name="send_intent_chooser">Поделиться через</string>
+    <string name="write_intent_data">mailto:</string>
 </resources>

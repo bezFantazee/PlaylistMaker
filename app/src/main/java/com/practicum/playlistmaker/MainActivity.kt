@@ -3,6 +3,7 @@ package com.practicum.playlistmaker
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //установка кнопки поиска(анинимный класс)
-        val searchButton = findViewById<LinearLayout>(R.id.search_button)
+        val searchButton = findViewById<Button>(R.id.search_button)
 
         val searchButtonClickListener: View.OnClickListener = object: View.OnClickListener{
             override fun onClick(v: View?){
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //установка кнопки медиатеки(лямбда выражение)
         searchButton.setOnClickListener(searchButtonClickListener)
 
-        val mediaLibraryButton = findViewById<LinearLayout>(R.id.media_library_button)
+        val mediaLibraryButton = findViewById<Button>(R.id.media_library_button)
 
         mediaLibraryButton.setOnClickListener {
             val mediaLibraryIntent = Intent(this, MediaLibraryActivity::class.java)
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //установка кнопки настроек(Реализация OnClickListener)
-        val settingsButton = findViewById<LinearLayout>(R.id.settings_button)
+        val settingsButton = findViewById<Button>(R.id.settings_button)
         settingsButton.setOnClickListener(this@MainActivity)
     }
 

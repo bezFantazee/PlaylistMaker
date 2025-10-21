@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:id="@+id/search">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "@string/search"
+        android:textSize="@dimen/standart_text_size"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/title_margin_start"
+        android:layout_marginTop="@dimen/title_margin_top"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:background="@drawable/rounded_grey"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        >
+        <ImageView
+            android:layout_width="@dimen/small_margin"
+            android:layout_height="@dimen/small_margin"
+            app:srcCompat="@drawable/light_mode"
+            app:tint="@color/darck_grey"
+            android:layout_marginEnd="8dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search"
+            android:textSize="@dimen/small_text_size"
+            android:textColor="@color/darck_grey"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                app:srcCompat="@drawable/light_mode"
+                app:tint="@color/blue"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/very_small_text"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/media_library_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:foreground="?attr/selectableItemBackground"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                app:srcCompat="@drawable/light_mode3"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/media_library"
+                android:textColor="@color/black"
+                android:textSize="@dimen/very_small_text"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:foreground="?attr/selectableItemBackground"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                app:srcCompat="@drawable/light_mode2"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textSize="@dimen/very_small_text"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

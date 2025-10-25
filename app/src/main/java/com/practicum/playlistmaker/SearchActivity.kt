@@ -3,8 +3,6 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -14,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
 
@@ -51,19 +50,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         //обработка пользовательского ввода
-        val simpleTextWatcher = object:TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                searchText = s?.toString() ?: ""
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
+        editText.doOnTextChanged{ text, start, count, after ->
+            clearButton.visibility = clearButtonVisibility(text)
+            searchText = text?.toString() ?: ""
         }
-        editText.addTextChangedListener(simpleTextWatcher)
 
         //кнопки навигации
         val settingsButton = findViewById<LinearLayout>(R.id.settings_button)
@@ -84,23 +74,18 @@ class SearchActivity : AppCompatActivity() {
     //логика работы сохранения пользовательского ввода
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(PRODUCT_AMOUNT, searchText)
+        outState.putString(SEARCH_TEXT_KEY, searchText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(PRODUCT_AMOUNT, AMOUNT_DEF)
+        searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, AMOUNT_DEF)
         val editText = findViewById<EditText>(R.id.search_input)
         editText.setText(searchText)
 
         //восстановление кнопки очистки
         val clearButton = findViewById<ImageView>(R.id.clear_button)
         clearButton.visibility = clearButtonVisibility(searchText)
-    }
-
-    companion object {
-        const val PRODUCT_AMOUNT = "PRODUCT_AMOUNT"
-        const val AMOUNT_DEF = ""
     }
 
     //логика появления кнопки очистки пользовательского ввода
@@ -110,5 +95,10 @@ class SearchActivity : AppCompatActivity() {
         } else{
             View.VISIBLE
         }
+    }
+
+    companion object {
+        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
+        private const val AMOUNT_DEF = ""
     }
 }

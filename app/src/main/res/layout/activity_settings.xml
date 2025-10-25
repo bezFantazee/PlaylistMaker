@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme = "@style/Base.Theme.PlaylistMaker"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:id="@+id/settings">
 
     <LinearLayout
@@ -19,35 +20,31 @@
             android:id="@+id/back_button"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            app:srcCompat="@drawable/arrow"
+            android:theme = "@style/Base.Theme.PlaylistMaker"
+            app:tint="?attr/colorOnPrimary"
+            app:srcCompat="@drawable/ic_arrow"
             android:layout_marginStart="@dimen/title_margin_start"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style ="@style/HeadText"
             android:layout_marginStart="24dp"
             android:text="@string/settings"
-            android:textSize="@dimen/standart_text_size"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            />
     </LinearLayout>
 
     <LinearLayout
+        style="@style/SettingsButton"
+        android:foreground="@null"
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:layout_marginTop="40dp"
         android:gravity="center_vertical"
         >
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style ="@style/SettingsButtonText"
             android:text="@string/dark_theme"
             android:layout_weight="1"
-            android:textSize="@dimen/small_text_size"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/small_margin"
             />
-
         <androidx.appcompat.widget.SwitchCompat
             android:layout_width="56dp"
             android:layout_height="40dp"
@@ -57,73 +54,56 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:gravity="center_vertical"
+        style="@style/SettingsButton"
+        android:id="@+id/share_button"
         >
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style ="@style/SettingsButtonText"
             android:text="@string/share_app"
             android:layout_weight="1"
-            android:textSize="@dimen/small_text_size"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/small_margin"
             />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            app:srcCompat = "@drawable/share"
+            style = "@style/Icon"
+            app:srcCompat = "@drawable/ic_share"
             android:layout_marginEnd="12dp"
             />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:gravity="center_vertical"
+        style="@style/SettingsButton"
+        android:id="@+id/write_to_support_button"
         >
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/SettingsButtonText"
             android:text="@string/write_to_support"
             android:layout_weight="1"
-            android:textSize="@dimen/small_text_size"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/small_margin"
             />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="18dp"
-            app:srcCompat = "@drawable/support"
-            android:layout_marginEnd="14dp"
+            style="@style/Icon"
+            app:srcCompat = "@drawable/ic_support"
+            android:layout_marginEnd="12dp"
             />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
+        style="@style/SettingsButton"
+        android:id="@+id/user_agreement_button"
         android:gravity="center_vertical"
         >
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style ="@style/SettingsButtonText"
             android:text="@string/user_agreement"
             android:layout_weight="1"
-            android:textSize="@dimen/small_text_size"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/small_margin"
             />
 
         <ImageView
-            android:layout_width="8dp"
-            android:layout_height="14dp"
-            app:srcCompat = "@drawable/arrow2"
-            android:layout_marginEnd="18dp"
+            style="@style/Icon"
+            app:srcCompat = "@drawable/ic_arrow2"
+            android:layout_marginEnd="12dp"
             />
 
     </LinearLayout>

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
     android:background="@color/white"
     android:id="@+id/media_library">
@@ -72,7 +73,7 @@
         <ImageView
             android:layout_width="@dimen/big_icon_size"
             android:layout_height="@dimen/big_icon_size"
-            app:srcCompat="@drawable/empty_media_library_icon"
+            app:srcCompat="@drawable/ic_empty_media_library"
             android:layout_marginTop="106dp"
             />
         <TextView
@@ -100,24 +101,17 @@
         >
         <LinearLayout
             android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_weight="3"
+            style="@style/NavigationPanel"
             android:foreground="?attr/selectableItemBackground"
             >
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode"
+                style= "@style/Icon"
+                app:srcCompat="@drawable/ic_search"
+                app:tint="?attr/colorOnPrimary"
                 />
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/NavigationPanel"
                 android:text="@string/search"
-                android:textColor="@color/black"
-                android:textSize="@dimen/very_small_text"
                 />
         </LinearLayout>
 
@@ -129,9 +123,8 @@
             android:layout_weight="3"
             >
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode3"
+                style="@style/Icon"
+                app:srcCompat="@drawable/ic_media_library"
                 app:tint="@color/blue"
                 />
             <TextView
@@ -155,7 +148,7 @@
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode2"
+                app:srcCompat="@drawable/ic_settings"
                 />
             <TextView
                 android:layout_width="wrap_content"

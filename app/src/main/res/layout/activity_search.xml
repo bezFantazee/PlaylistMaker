@@ -3,22 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:id="@+id/search">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text = "@string/search"
-        android:textSize="@dimen/standart_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginStart="@dimen/title_margin_start"
-        android:layout_marginTop="@dimen/title_margin_top"
-        />
+    android:background="?attr/colorPrimary"
+    android:id="@+id/activity_search">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/title_margin_top"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:foreground="?attr/selectableItemBackground"
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:theme = "@style/Base.Theme.PlaylistMaker"
+            app:tint="?attr/colorOnPrimary"
+            app:srcCompat="@drawable/ic_arrow"
+            android:layout_marginStart="@dimen/title_margin_start"/>
+
+        <TextView
+            style ="@style/HeadText"
+            android:layout_marginStart="24dp"
+            android:text="@string/search"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_input_container"
+        style="@style/Theme.SearchBar"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:background="@drawable/rounded_grey"
@@ -27,22 +43,49 @@
         android:layout_marginTop="24dp"
         android:gravity="center_vertical"
         android:paddingStart="12dp"
+        android:paddingEnd="14dp"
         >
         <ImageView
+            style="@style/Theme.SearchBar"
             android:layout_width="@dimen/small_margin"
             android:layout_height="@dimen/small_margin"
-            app:srcCompat="@drawable/light_mode"
-            app:tint="@color/darck_grey"
+            app:srcCompat="@drawable/ic_search"
             android:layout_marginEnd="8dp"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search"
-            android:textSize="@dimen/small_text_size"
-            android:textColor="@color/darck_grey"
-            />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <EditText
+                android:id ="@+id/search_input"
+                style="@style/Theme.SearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/search"
+                android:textSize="16sp"
+                android:fontFamily="@font/ys_display_regular"
+                android:textFontWeight="400"
+                android:inputType="text"
+                android:singleLine="true"
+                android:lines="1"
+                android:layout_marginEnd="4dp"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                />
+            <ImageView
+                style="@style/Theme.SearchBar"
+                android:id="@+id/clear_button"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:srcCompat="@drawable/ic_clear"
+                android:visibility="gone"
+                android:layout_gravity="end|center_vertical"
+                />
+        </FrameLayout>
+
     </LinearLayout>
 
     <View
@@ -63,70 +106,49 @@
 
         >
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_weight="3"
+            style = "@style/NavigationPanel"
             >
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode"
+                style = "@style/Icon"
+                app:srcCompat="@drawable/ic_search"
                 app:tint="@color/blue"
                 />
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/NavigationPanel"
                 android:text="@string/search"
                 android:textColor="@color/blue"
-                android:textSize="@dimen/very_small_text"
                 />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/media_library_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_weight="3"
+            style = "@style/NavigationPanel"
             android:foreground="?attr/selectableItemBackground"
             >
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode3"
+                style= "@style/Icon"
+                app:srcCompat="@drawable/ic_media_library"
+                app:tint="?attr/colorOnPrimary"
                 />
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/NavigationPanel"
                 android:text="@string/media_library"
-                android:textColor="@color/black"
-                android:textSize="@dimen/very_small_text"
                 />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
+            style="@style/NavigationPanel"
             android:foreground="?attr/selectableItemBackground"
             >
             <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/light_mode2"
+                style = "@style/Icon"
+                app:srcCompat="@drawable/ic_settings"
+                app:tint="?attr/colorOnPrimary"
                 />
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/NavigationPanel"
                 android:text="@string/settings"
-                android:textSize="@dimen/very_small_text"
-                android:textColor="@color/black"
                 />
         </LinearLayout>
     </LinearLayout>

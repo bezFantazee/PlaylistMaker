@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-
     implementation("com.github.bumptech.glide:glide:5.0.5")
     kapt("com.github.bumptech.glide:compiler:5.0.5")
     implementation(libs.androidx.core.ktx)
@@ -45,6 +44,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.gson)
+    implementation(libs.retrofit.gson.converter)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

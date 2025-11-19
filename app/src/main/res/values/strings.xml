@@ -12,6 +12,7 @@
     <string name="featured_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
     <string name="empty_media_library">Ваша медиатека пуста</string>
+    <string name="update">Обновить</string>
 <!--    Для настроек-->
     <string name="url_for_share">https://practicum.yandex.ru/profile/android-developer/</string>
     <string name="theme_for_email_to_support">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
@@ -25,4 +26,7 @@
     <string name="default_track_name">Неизвестный трек</string>
     <string name="default_artist_name">Неизвестные исполнитель</string>
     <string name="default_time">0:00</string>
+    <string name="empty_search">Ничего не нашлось</string>
+    <string name="connect_error">Проблемы со связью</string>
+    <string name="extra_connect_error">Загрузка не удалась. Проверьте подключение к интернету</string>
 </resources>

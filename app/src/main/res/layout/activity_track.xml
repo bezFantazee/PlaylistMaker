@@ -8,7 +8,9 @@
     android:paddingEnd="12dp"
     android:gravity="center"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/colorPrimary"
+    android:id="@+id/track"
+    android:foreground="?attr/selectableItemBackground">
     
     <ImageView
         android:id="@+id/track_icon"

@@ -6,4 +6,6 @@
     <color name="grey">#E6E8EB</color>
     <color name="text_grey">#AEAFB4</color>
     <color name="icon_color">#AEAFB4</color>
+    <color name="switch_thumb_color">#00D6C3</color>
+    <color name="switch_track_color">#76EAE0</color>
 </resources>

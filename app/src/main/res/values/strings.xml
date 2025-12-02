@@ -13,6 +13,8 @@
     <string name="playlists">Плейлисты</string>
     <string name="empty_media_library">Ваша медиатека пуста</string>
     <string name="update">Обновить</string>
+    <string name="search_history">Вы искали</string>
+    <string name="clear_search">Очистить историю</string>
 <!--    Для настроек-->
     <string name="url_for_share">https://practicum.yandex.ru/profile/android-developer/</string>
     <string name="theme_for_email_to_support">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>

@@ -74,4 +74,14 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/very_small_text</item>
     </style>
+
+    <style name="SmallButton" parent="Button">
+        <item name="android:letterSpacing">0</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:backgroundTint">?attr/colorOnPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">54dp</item>
+    </style>
 </resources>

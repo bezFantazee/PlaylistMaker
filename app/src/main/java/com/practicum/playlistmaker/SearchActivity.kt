@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,6 +28,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val TRACK_ID = "TRACK_ID"
+const val TRACK_NAME = "TRACK_NAME"
+const val ARTIST_NAME = "ARTIST_NAME"
+const val ARTWORK_URL = "ARTWORK_URL"
+const val COLLECTION_NAME = "COLLECTION_NAME"
+const val GENRE_NAME = "GENRE_NAME"
+const val COUNTRY = "COUNTRY"
+const val TRACK_TIME = "TRACK_TIME"
+const val TRACK_ALBUM = "TRACK_ALBUM"
+const val TRACK_YEAR = "TRACK_YEAR"
+
 class SearchActivity : AppCompatActivity() {
 
     private var searchText: String = ""
@@ -40,7 +52,21 @@ class SearchActivity : AppCompatActivity() {
 
     private val tracksService = retrofit.create(TrackApi::class.java)
     private val tracks = mutableListOf<Track>()
-    private val tracksAdapter = TracksAdapter(tracks)
+    private val tracksAdapter = TracksAdapter(tracks) {track ->
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRACK_ID, track.trackId)
+        intent.putExtra(TRACK_NAME, track.trackName)
+        intent.putExtra(ARTIST_NAME, track.artistName)
+        intent.putExtra(TRACK_TIME, track.trackTimeMillis)
+        intent.putExtra(TRACK_ALBUM, track.collectionName)
+        intent.putExtra(ARTWORK_URL, track.artworkUrl100)
+        intent.putExtra(COLLECTION_NAME, track.collectionName)
+        intent.putExtra(GENRE_NAME, track.primaryGenreName)
+        intent.putExtra(COUNTRY, track.country)
+        intent.putExtra(TRACK_YEAR, track.releaseDate)
+
+        startActivity(intent)
+    }
 
     private lateinit var editText: EditText
     private lateinit var searchPlaceHolderImg: ImageView
@@ -52,7 +78,21 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryText: TextView
     private lateinit var searchHistoryClearButton: Button
     private var historyTracks = mutableListOf<Track>()
-    private val historyTracksAdapter = TracksAdapter(historyTracks)
+    private val historyTracksAdapter = TracksAdapter(historyTracks) {track ->
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRACK_ID, track.trackId)
+        intent.putExtra(TRACK_NAME, track.trackName)
+        intent.putExtra(ARTIST_NAME, track.artistName)
+        intent.putExtra(TRACK_TIME, track.trackTimeMillis)
+        intent.putExtra(TRACK_ALBUM, track.collectionName)
+        intent.putExtra(ARTWORK_URL, track.artworkUrl100)
+        intent.putExtra(COLLECTION_NAME, track.collectionName)
+        intent.putExtra(GENRE_NAME, track.primaryGenreName)
+        intent.putExtra(COUNTRY, track.country)
+        intent.putExtra(TRACK_YEAR, track.releaseDate)
+
+        startActivity(intent)
+    }
     private lateinit var historyTracksRecycleView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {

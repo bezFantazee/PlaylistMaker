@@ -31,4 +31,11 @@
     <string name="empty_search">Ничего не нашлось</string>
     <string name="connect_error">Проблемы со связью</string>
     <string name="extra_connect_error">Загрузка не удалась. Проверьте подключение к интернету</string>
+
+<!--    Для аудиоплеера-->
+    <string name="track_time">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
 </resources>

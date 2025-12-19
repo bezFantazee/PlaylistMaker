@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.net.toUri
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +30,21 @@ class SettingsActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
+        //кнопка темная тема
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val sharePref = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+        if(sharePref
+            .getString(THEME_KEY, "")==DARK_THEME){
+            themeSwitcher.isChecked = true
+        } else{
+            themeSwitcher.isChecked = false
+        }
 
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
+
+        //кнопка поделиться
         val shareButton = findViewById<LinearLayout>(R.id.share_button)
 
         shareButton.setOnClickListener {
@@ -40,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
 
             startActivity(Intent.createChooser(sendIntent, getString(R.string.send_intent_chooser)))
         }
-
+        //кнопка написать в поддержку
         val writeToSupportButton = findViewById<LinearLayout>(R.id.write_to_support_button)
 
         writeToSupportButton.setOnClickListener {

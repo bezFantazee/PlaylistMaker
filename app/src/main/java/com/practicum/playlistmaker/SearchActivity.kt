@@ -3,6 +3,10 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -13,9 +17,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +28,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+const val TRACK_KEY = "track_key"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -38,14 +44,29 @@ class SearchActivity : AppCompatActivity() {
 
     private val tracksService = retrofit.create(TrackApi::class.java)
     private val tracks = mutableListOf<Track>()
-    private val tracksAdapter = TracksAdapter(tracks)
+    private val tracksAdapter = TracksAdapter(tracks) {track ->
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRACK_KEY, track)
+        startActivity(intent)
+    }
 
     private lateinit var editText: EditText
     private lateinit var searchPlaceHolderImg: ImageView
     private lateinit var searchPlaceHolderText: TextView
-    private lateinit var searchUdateButton: Button
+    private lateinit var searchUpdateButton: Button
     private lateinit var searchPlaceHolderExtraMessage: TextView
     private lateinit var tracksRecyclerView: RecyclerView
+
+    private lateinit var searchHistoryText: TextView
+    private lateinit var searchHistoryClearButton: Button
+    private var historyTracks = mutableListOf<Track>()
+    private val historyTracksAdapter = TracksAdapter(historyTracks) {track ->
+
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRACK_KEY, track)
+        startActivity(intent)
+    }
+    private lateinit var historyTracksRecycleView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +115,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        //список треков
         tracksRecyclerView = findViewById<RecyclerView>(R.id.tracks_list)
         tracksRecyclerView.layoutManager= LinearLayoutManager(this)
 
@@ -104,12 +126,54 @@ class SearchActivity : AppCompatActivity() {
         searchPlaceHolderExtraMessage = findViewById(R.id.placeholder_extra_message)
 
         //обновление загрузки
-        searchUdateButton = findViewById(R.id.update_button)
-        searchUdateButton.visibility = View.GONE
-        searchUdateButton.setOnClickListener {
+        searchUpdateButton = findViewById(R.id.update_button)
+        searchUpdateButton.visibility = View.GONE
+        searchUpdateButton.setOnClickListener {
             showPlaceholder("", "")
             search()
             tracksRecyclerView.visibility = View.VISIBLE
+        }
+
+        //история поиска
+        val historyTracksContainer: LinearLayout = findViewById(R.id.search_history)
+
+        historyTracksRecycleView = findViewById(R.id.history_tracks_list)
+        historyTracksRecycleView.layoutManager = LinearLayoutManager(this)
+        historyTracksRecycleView.adapter = historyTracksAdapter
+        searchHistoryText = findViewById(R.id.search_history_text)
+        searchHistoryClearButton = findViewById(R.id.clear_history_button)
+        val searchHistoryService = SearchHistory(getSharedPreferences(SEARCH_PREFERENCES, MODE_PRIVATE))
+        searchHistoryClearButton.setOnClickListener {
+            searchHistoryService.clearHistory()
+            historyTracks.clear()
+            historyTracksAdapter.notifyDataSetChanged()
+            historyTracksContainer.visibility = View.GONE
+        }
+        editText.setOnFocusChangeListener{ view, hasFocus ->
+            if (hasFocus && editText.text.isEmpty()){
+                historyTracks.clear()
+                historyTracks.addAll( searchHistoryService.getTracks())
+                historyTracksAdapter.notifyDataSetChanged()
+                if(historyTracks.isNotEmpty()){
+                    historyTracksContainer.visibility = View.VISIBLE
+                }
+            } else {
+                historyTracksContainer.visibility = View.GONE
+            }
+
+        }
+
+        editText.doOnTextChanged { s, start, before, count ->
+            if (editText.hasFocus() && s?.isEmpty() == true){
+                historyTracks.clear()
+                historyTracks.addAll( searchHistoryService.getTracks())
+                historyTracksAdapter.notifyDataSetChanged()
+                if(historyTracks.isNotEmpty()){
+                    historyTracksContainer.visibility = View.VISIBLE
+                }
+            } else {
+                historyTracksContainer.visibility = View.GONE
+            }
         }
     }
 
@@ -185,20 +249,21 @@ class SearchActivity : AppCompatActivity() {
                 searchPlaceHolderExtraMessage.visibility = View.VISIBLE
                 searchPlaceHolderExtraMessage.text = extraText
 
-                searchUdateButton.visibility = View.VISIBLE
+                searchUpdateButton.visibility = View.VISIBLE
             } else {
                 searchPlaceHolderImg.setImageResource(R.drawable.ic_empty_media_library)
-                searchUdateButton.visibility = View.GONE
+                searchUpdateButton.visibility = View.GONE
             }
         } else {
             searchPlaceHolderImg.visibility = View.GONE
             searchPlaceHolderText.visibility = View.GONE
             searchPlaceHolderExtraMessage.visibility = View.GONE
-            searchUdateButton.visibility = View.GONE
+            searchUpdateButton.visibility = View.GONE
         }
     }
 
     companion object {
+        const val SEARCH_PREFERENCES = "search_history_pref"
         private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
         private const val AMOUNT_DEF = ""
     }

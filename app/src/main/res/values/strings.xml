@@ -13,6 +13,8 @@
     <string name="playlists">Плейлисты</string>
     <string name="empty_media_library">Ваша медиатека пуста</string>
     <string name="update">Обновить</string>
+    <string name="search_history">Вы искали</string>
+    <string name="clear_search">Очистить историю</string>
 <!--    Для настроек-->
     <string name="url_for_share">https://practicum.yandex.ru/profile/android-developer/</string>
     <string name="theme_for_email_to_support">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
@@ -29,4 +31,11 @@
     <string name="empty_search">Ничего не нашлось</string>
     <string name="connect_error">Проблемы со связью</string>
     <string name="extra_connect_error">Загрузка не удалась. Проверьте подключение к интернету</string>
+
+<!--    Для аудиоплеера-->
+    <string name="track_time">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
 </resources>

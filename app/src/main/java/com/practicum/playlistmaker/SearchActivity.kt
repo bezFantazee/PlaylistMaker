@@ -3,6 +3,7 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -28,16 +29,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val TRACK_ID = "TRACK_ID"
-const val TRACK_NAME = "TRACK_NAME"
-const val ARTIST_NAME = "ARTIST_NAME"
-const val ARTWORK_URL = "ARTWORK_URL"
-const val COLLECTION_NAME = "COLLECTION_NAME"
-const val GENRE_NAME = "GENRE_NAME"
-const val COUNTRY = "COUNTRY"
-const val TRACK_TIME = "TRACK_TIME"
-const val TRACK_ALBUM = "TRACK_ALBUM"
-const val TRACK_YEAR = "TRACK_YEAR"
+const val TRACK_KEY = "track_key"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -54,17 +46,7 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = mutableListOf<Track>()
     private val tracksAdapter = TracksAdapter(tracks) {track ->
         val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra(TRACK_ID, track.trackId)
-        intent.putExtra(TRACK_NAME, track.trackName)
-        intent.putExtra(ARTIST_NAME, track.artistName)
-        intent.putExtra(TRACK_TIME, track.trackTimeMillis)
-        intent.putExtra(TRACK_ALBUM, track.collectionName)
-        intent.putExtra(ARTWORK_URL, track.artworkUrl100)
-        intent.putExtra(COLLECTION_NAME, track.collectionName)
-        intent.putExtra(GENRE_NAME, track.primaryGenreName)
-        intent.putExtra(COUNTRY, track.country)
-        intent.putExtra(TRACK_YEAR, track.releaseDate)
-
+        intent.putExtra(TRACK_KEY, track)
         startActivity(intent)
     }
 
@@ -79,18 +61,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryClearButton: Button
     private var historyTracks = mutableListOf<Track>()
     private val historyTracksAdapter = TracksAdapter(historyTracks) {track ->
-        val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra(TRACK_ID, track.trackId)
-        intent.putExtra(TRACK_NAME, track.trackName)
-        intent.putExtra(ARTIST_NAME, track.artistName)
-        intent.putExtra(TRACK_TIME, track.trackTimeMillis)
-        intent.putExtra(TRACK_ALBUM, track.collectionName)
-        intent.putExtra(ARTWORK_URL, track.artworkUrl100)
-        intent.putExtra(COLLECTION_NAME, track.collectionName)
-        intent.putExtra(GENRE_NAME, track.primaryGenreName)
-        intent.putExtra(COUNTRY, track.country)
-        intent.putExtra(TRACK_YEAR, track.releaseDate)
 
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRACK_KEY, track)
         startActivity(intent)
     }
     private lateinit var historyTracksRecycleView: RecyclerView
@@ -189,37 +162,19 @@ class SearchActivity : AppCompatActivity() {
             }
 
         }
-        editText.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                if (editText.hasFocus() && s?.isEmpty() == true){
-                    historyTracks.clear()
-                    historyTracks.addAll( searchHistoryService.getTracks())
-                    historyTracksAdapter.notifyDataSetChanged()
-                    if(historyTracks.isNotEmpty()){
-                        historyTracksContainer.visibility = View.VISIBLE
-                    }
-                } else {
-                    historyTracksContainer.visibility = View.GONE
+        editText.doOnTextChanged { s, start, before, count ->
+            if (editText.hasFocus() && s?.isEmpty() == true){
+                historyTracks.clear()
+                historyTracks.addAll( searchHistoryService.getTracks())
+                historyTracksAdapter.notifyDataSetChanged()
+                if(historyTracks.isNotEmpty()){
+                    historyTracksContainer.visibility = View.VISIBLE
                 }
+            } else {
+                historyTracksContainer.visibility = View.GONE
             }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-        })
+        }
     }
 
     //логика работы сохранения пользовательского ввода

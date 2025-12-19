@@ -57,11 +57,16 @@ class AudioPlayerActivity: AppCompatActivity() {
         trackGenreView = findViewById(R.id.genre)
         trackCountryView = findViewById(R.id.country)
 
-        val trackName = intent.getStringExtra(TRACK_NAME)
-        trackNameView.text = trackName
-        val artistName = intent.getStringExtra(ARTIST_NAME)
-        artistNameView.text = artistName
-        val trackTimeMillis = intent.getLongExtra(TRACK_TIME, 0L)
+        @Suppress("DEPRECATION")
+        val track = intent.getParcelableExtra<Track>(TRACK_KEY)
+        if (track == null) {
+            finish()
+            return
+        }
+
+        trackNameView.text = track.trackName
+        artistNameView.text = track.artistName
+        val trackTimeMillis = track.trackTimeMillis
         val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) % 60
         trackTimeView.text= String.format(
@@ -70,13 +75,13 @@ class AudioPlayerActivity: AppCompatActivity() {
             minutes,
             seconds
         )
-        val album = intent.getStringExtra(TRACK_ALBUM)
+        val album = track?.collectionName
         if (album.isNullOrEmpty()){
             val trackAlbumGroup: Group = findViewById(R.id.albumGroup)
             trackAlbumGroup.visibility = View.GONE
         }
         trackAlbumView.text = album
-        val yearString = intent.getStringExtra(TRACK_YEAR)
+        val yearString = track?.releaseDate
         if (yearString.isNullOrEmpty()){
             val trackYearGroup: Group = findViewById(R.id.yearGroup)
             trackYearGroup.visibility = View.GONE
@@ -86,10 +91,10 @@ class AudioPlayerActivity: AppCompatActivity() {
 
             trackYearView.text = year.toString()
         }
-        trackGenreView.text = intent.getStringExtra(GENRE_NAME)
-        trackCountryView.text = intent.getStringExtra(COUNTRY)
+        trackGenreView.text = track.primaryGenreName
+        trackCountryView.text = track.country
 
-        var artworkUrl = intent.getStringExtra(ARTWORK_URL)
+        var artworkUrl = track?.artworkUrl100
         artworkUrl = getCoverArtwork(artworkUrl)
         Glide.with(this)
             .load(artworkUrl)

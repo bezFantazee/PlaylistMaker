@@ -3,6 +3,8 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,6 +16,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +26,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Runnable
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +36,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val TRACK_KEY = "track_key"
 
 class SearchActivity : AppCompatActivity() {
-
+    companion object {
+        const val SEARCH_PREFERENCES = "search_history_pref"
+        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
+        private const val AMOUNT_DEF = ""
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { search() }
     private var searchText: String = ""
 
     private val tracksBaseUrl = "https://itunes.apple.com"
@@ -59,12 +72,14 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchHistoryText: TextView
     private lateinit var searchHistoryClearButton: Button
+    private lateinit var progressBar: ProgressBar
     private var historyTracks = mutableListOf<Track>()
     private val historyTracksAdapter = TracksAdapter(historyTracks) {track ->
-
-        val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra(TRACK_KEY, track)
-        startActivity(intent)
+        if(clickDebounce()){
+            val intent = Intent(this, AudioPlayerActivity::class.java)
+            intent.putExtra(TRACK_KEY, track)
+            startActivity(intent)
+        }
     }
     private lateinit var historyTracksRecycleView: RecyclerView
 
@@ -81,6 +96,7 @@ class SearchActivity : AppCompatActivity() {
         //реализация ввода в поиск
         editText = findViewById(R.id.search_input)
         val clearButton = findViewById<ImageView>(R.id.clear_button)
+        progressBar = findViewById(R.id.progressBar) //визулизация загрузки
 
         clearButton.setOnClickListener { //логика работы кнопки очистки пользовательского ввода
             editText.setText("")
@@ -96,6 +112,15 @@ class SearchActivity : AppCompatActivity() {
         editText.doOnTextChanged{ text, start, count, after -> //обработка пользовательского ввода
             clearButton.visibility = clearButtonVisibility(text)
             searchText = text?.toString() ?: ""
+            searchDebounce()
+        }
+
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                search()
+                true
+            }
+            false
         }
 
         //кнопки навигации
@@ -106,17 +131,8 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
-                true
-            }
-            false
-        }
-
         //список треков
-        tracksRecyclerView = findViewById<RecyclerView>(R.id.tracks_list)
+        tracksRecyclerView = findViewById(R.id.tracks_list)
         tracksRecyclerView.layoutManager= LinearLayoutManager(this)
 
         tracksRecyclerView.adapter = tracksAdapter
@@ -203,37 +219,62 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    //debounce для обработки нажатия на элемент списка результатов поиска
+    private fun clickDebounce(): Boolean{
+        val current = isClickAllowed
+        if (isClickAllowed){
+            isClickAllowed = false
+            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     //логика поиска
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
     private fun search(){
-        tracksService.search(editText.text.toString())
-            .enqueue(object: Callback<TracksResponse>{
-                override fun onResponse(
-                    call: Call<TracksResponse?>,
-                    response: Response<TracksResponse?>
-                ) {
-                    if(response.isSuccessful()) {
-                        tracks.clear()
-                        val body = response.body()?.results
-                        if (body?.isNotEmpty() == true) {
-                            tracks.addAll(body)
-                            tracksAdapter.notifyDataSetChanged()
-                            showPlaceholder("", "")//убираем заглушку
+        if(searchText.isNotEmpty()){
+            searchPlaceHolderImg.visibility = View.GONE
+            searchPlaceHolderText.visibility = View.GONE
+            tracksRecyclerView.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+
+            tracksService.search(editText.text.toString())
+                .enqueue(object: Callback<TracksResponse>{
+                    override fun onResponse(
+                        call: Call<TracksResponse?>,
+                        response: Response<TracksResponse?>
+                    ) {
+                        progressBar.visibility = View.GONE
+                        if(response.isSuccessful()) {
+                            tracks.clear()
+                            val body = response.body()?.results
+                            if (body?.isNotEmpty() == true) {
+                                tracksRecyclerView.visibility = View.VISIBLE
+                                tracks.addAll(body)
+                                tracksAdapter.notifyDataSetChanged()
+                                showPlaceholder("", "")//убираем заглушку
+                            } else {
+                                showPlaceholder(getString(R.string.empty_search).toString(), "") //показываем заглушку(ничего не найдено)
+                            }
                         } else {
-                            showPlaceholder(getString(R.string.empty_search).toString(), "") //показываем заглушку(ничего не найдено)
+                            showPlaceholder(getString(R.string.connect_error).toString(), getString(R.string.extra_connect_error).toString())//показываем заглушку(ошибка подключения)
                         }
-                    } else {
-                        showPlaceholder(getString(R.string.connect_error).toString(), getString(R.string.extra_connect_error).toString())//показываем заглушку(ошибка подключения)
                     }
-                }
 
-                override fun onFailure(
-                    call: Call<TracksResponse?>,
-                    t: Throwable
-                ) {
-                    showPlaceholder(getString(R.string.connect_error).toString(), getString(R.string.extra_connect_error).toString()) //показываем заглушку(ошибка подключения)
-                }
+                    override fun onFailure(
+                        call: Call<TracksResponse?>,
+                        t: Throwable
+                    ) {
+                        progressBar.visibility = View.GONE
+                        showPlaceholder(getString(R.string.connect_error).toString(), getString(R.string.extra_connect_error).toString()) //показываем заглушку(ошибка подключения)
+                    }
 
-            })
+                })
+        }
+
     }
 
     private fun showPlaceholder(text: String, extraText:String){
@@ -260,11 +301,5 @@ class SearchActivity : AppCompatActivity() {
             searchPlaceHolderExtraMessage.visibility = View.GONE
             searchUpdateButton.visibility = View.GONE
         }
-    }
-
-    companion object {
-        const val SEARCH_PREFERENCES = "search_history_pref"
-        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
-        private const val AMOUNT_DEF = ""
     }
 }

@@ -24,14 +24,14 @@ import java.util.concurrent.TimeUnit
 
 class AudioPlayerActivity: AppCompatActivity() {
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSE = 3
         private const val UPDATE_TIMETRACK_TIME = 300L
     }
 
-    private var playerState = STATE_DEFAULT
+    enum class PlayerState {
+        DEFAULT, PREPARED, PLAYING, PAUSE
+    }
+
+    private var playerState = PlayerState.DEFAULT
     private val handler = Handler(Looper.getMainLooper())
     private val mediaPlayer = MediaPlayer()
     private var mediaPlayerRunnable: Runnable? = null
@@ -155,29 +155,30 @@ class AudioPlayerActivity: AppCompatActivity() {
     //функции для управления медиаплеером
     private fun playbackControl() {
         when(playerState) {
-            STATE_PLAYING -> {
+            PlayerState.PLAYING -> {
                 pausePlayer()
                 mediaPlayerRunnable?.let {
                     handler.removeCallbacks(it)
                 }
                 mediaPlayerRunnable = null
             }
-            STATE_PREPARED, STATE_PAUSE -> {
+            PlayerState.PREPARED, PlayerState.PAUSE -> {
                 startPlayer()
                 setTrackTime()
             }
+            PlayerState.DEFAULT -> {}
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause)
-        playerState = STATE_PLAYING
+        playerState = PlayerState.PLAYING
     }
     private fun pausePlayer() {
         mediaPlayer.pause()
         playButton.setImageResource(R.drawable.ic_play)
-        playerState = STATE_PAUSE
+        playerState = PlayerState.PAUSE
     }
 
     private fun preparePlayer(trackUrl: String?) {
@@ -188,11 +189,11 @@ class AudioPlayerActivity: AppCompatActivity() {
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playButton.isEnabled = true
-            playerState = STATE_PREPARED
+            playerState = PlayerState.PREPARED
         }
         mediaPlayer.setOnCompletionListener {
             playButton.setImageResource(R.drawable.ic_play)
-            playerState = STATE_PREPARED
+            playerState = PlayerState.PREPARED
             mediaPlayerRunnable?.let{
                 handler.removeCallbacks(it)
             }
@@ -209,7 +210,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         mediaPlayerRunnable = object: Runnable {
             override fun run() {
                 trackTimeText.text = formatTime(mediaPlayer.currentPosition)
-                if(playerState == STATE_PLAYING){
+                if(playerState == PlayerState.PLAYING){
                     handler.postDelayed(
                         this,
                         UPDATE_TIMETRACK_TIME
@@ -218,7 +219,7 @@ class AudioPlayerActivity: AppCompatActivity() {
             }
 
         }
-        if(playerState == STATE_PLAYING){
+        if(playerState == PlayerState.PLAYING){
             handler.postDelayed(
                 mediaPlayerRunnable!!,
                 UPDATE_TIMETRACK_TIME

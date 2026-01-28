@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.audioPlayer
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,16 +11,19 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.ui.search.TRACK_KEY
+import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class AudioPlayerActivity: AppCompatActivity() {
     companion object {
@@ -95,7 +98,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         val trackTimeMillis = track.trackTimeMillis
         val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) % 60
-        trackTimeView.text= String.format(
+        trackTimeView.text= String.Companion.format(
             Locale.getDefault(),
             "%02d:%02d",
             minutes,
@@ -112,7 +115,7 @@ class AudioPlayerActivity: AppCompatActivity() {
             val trackYearGroup: Group = findViewById(R.id.yearGroup)
             trackYearGroup.visibility = View.GONE
         } else{
-            val year = java.time.OffsetDateTime.parse(yearString).year
+            val year = OffsetDateTime.parse(yearString).year
             Log.d("intent", year.toString())
 
             trackYearView.text = year.toString()
@@ -132,7 +135,9 @@ class AudioPlayerActivity: AppCompatActivity() {
                         TypedValue.COMPLEX_UNIT_DIP,
                         8f,
                         this.resources.displayMetrics
-                    ).toInt()))
+                    ).toInt()
+                )
+            )
             .into(trackCoverView)
     }
 

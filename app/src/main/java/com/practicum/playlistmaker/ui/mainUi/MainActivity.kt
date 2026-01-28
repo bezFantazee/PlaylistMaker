@@ -1,15 +1,17 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.mainUi
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.ui.mediaLibrary.MediaLibraryActivity
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.ui.settings.SettingsActivity
+import com.practicum.playlistmaker.ui.search.SearchActivity
 
 const val PREFERENCES = "theme_preferences"
 const val THEME_KEY = "key_for_theme"

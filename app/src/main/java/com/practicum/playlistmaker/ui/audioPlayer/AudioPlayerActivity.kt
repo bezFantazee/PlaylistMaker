@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.audioPlayer
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,27 +11,27 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.ui.search.TRACK_KEY
+import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
+import com.practicum.playlistmaker.domain.models.PlayerState
 
 class AudioPlayerActivity: AppCompatActivity() {
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSE = 3
         private const val UPDATE_TIMETRACK_TIME = 300L
     }
 
-    private var playerState = STATE_DEFAULT
+    private var playerState = PlayerState.DEFAULT
     private val handler = Handler(Looper.getMainLooper())
     private val mediaPlayer = MediaPlayer()
     private var mediaPlayerRunnable: Runnable? = null
@@ -95,7 +95,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         val trackTimeMillis = track.trackTimeMillis
         val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) % 60
-        trackTimeView.text= String.format(
+        trackTimeView.text= String.Companion.format(
             Locale.getDefault(),
             "%02d:%02d",
             minutes,
@@ -112,7 +112,7 @@ class AudioPlayerActivity: AppCompatActivity() {
             val trackYearGroup: Group = findViewById(R.id.yearGroup)
             trackYearGroup.visibility = View.GONE
         } else{
-            val year = java.time.OffsetDateTime.parse(yearString).year
+            val year = OffsetDateTime.parse(yearString).year
             Log.d("intent", year.toString())
 
             trackYearView.text = year.toString()
@@ -132,7 +132,9 @@ class AudioPlayerActivity: AppCompatActivity() {
                         TypedValue.COMPLEX_UNIT_DIP,
                         8f,
                         this.resources.displayMetrics
-                    ).toInt()))
+                    ).toInt()
+                )
+            )
             .into(trackCoverView)
     }
 
@@ -155,29 +157,30 @@ class AudioPlayerActivity: AppCompatActivity() {
     //функции для управления медиаплеером
     private fun playbackControl() {
         when(playerState) {
-            STATE_PLAYING -> {
+            PlayerState.PLAYING -> {
                 pausePlayer()
                 mediaPlayerRunnable?.let {
                     handler.removeCallbacks(it)
                 }
                 mediaPlayerRunnable = null
             }
-            STATE_PREPARED, STATE_PAUSE -> {
+            PlayerState.PREPARED, PlayerState.PAUSE -> {
                 startPlayer()
                 setTrackTime()
             }
+            PlayerState.DEFAULT -> {}
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause)
-        playerState = STATE_PLAYING
+        playerState = PlayerState.PLAYING
     }
     private fun pausePlayer() {
         mediaPlayer.pause()
         playButton.setImageResource(R.drawable.ic_play)
-        playerState = STATE_PAUSE
+        playerState = PlayerState.PAUSE
     }
 
     private fun preparePlayer(trackUrl: String?) {
@@ -188,11 +191,11 @@ class AudioPlayerActivity: AppCompatActivity() {
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playButton.isEnabled = true
-            playerState = STATE_PREPARED
+            playerState = PlayerState.PREPARED
         }
         mediaPlayer.setOnCompletionListener {
             playButton.setImageResource(R.drawable.ic_play)
-            playerState = STATE_PREPARED
+            playerState = PlayerState.PREPARED
             mediaPlayerRunnable?.let{
                 handler.removeCallbacks(it)
             }
@@ -209,7 +212,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         mediaPlayerRunnable = object: Runnable {
             override fun run() {
                 trackTimeText.text = formatTime(mediaPlayer.currentPosition)
-                if(playerState == STATE_PLAYING){
+                if(playerState == PlayerState.PLAYING){
                     handler.postDelayed(
                         this,
                         UPDATE_TIMETRACK_TIME
@@ -218,7 +221,7 @@ class AudioPlayerActivity: AppCompatActivity() {
             }
 
         }
-        if(playerState == STATE_PLAYING){
+        if(playerState == PlayerState.PLAYING){
             handler.postDelayed(
                 mediaPlayerRunnable!!,
                 UPDATE_TIMETRACK_TIME

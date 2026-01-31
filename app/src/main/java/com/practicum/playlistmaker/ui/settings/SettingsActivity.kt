@@ -1,18 +1,28 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.settings
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.net.toUri
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.preferences.ThemeInteractor
+import com.practicum.playlistmaker.ui.mainUi.PREFERENCES
+import com.practicum.playlistmaker.ui.mainUi.THEME_KEY
 
 class SettingsActivity : AppCompatActivity() {
+    companion object{
+        const val DARK_THEME = "Темная тема"
+        const val LIGHT_THEME = "Светлая тема"
+    }
+    private lateinit var themeInteractor: ThemeInteractor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,16 +42,16 @@ class SettingsActivity : AppCompatActivity() {
         }
         //кнопка темная тема
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        val sharePref = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
-        if(sharePref
-            .getString(THEME_KEY, "")==DARK_THEME){
+        themeInteractor = Creator.provideThemeInteractor(PREFERENCES)
+
+        if (themeInteractor.getCurrentTheme(THEME_KEY) == DARK_THEME){
             themeSwitcher.isChecked = true
         } else{
             themeSwitcher.isChecked = false
         }
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            themeInteractor.saveTheme(if (checked) DARK_THEME else LIGHT_THEME, PREFERENCES)
         }
 
         //кнопка поделиться

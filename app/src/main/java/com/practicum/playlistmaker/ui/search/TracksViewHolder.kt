@@ -1,7 +1,5 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.search
 
-import android.content.Context
-import java.util.concurrent.TimeUnit
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -35,7 +35,9 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
                         TypedValue.COMPLEX_UNIT_DIP,
                         2f,
                         itemView.context.resources.displayMetrics
-                    ).toInt()))
+                    ).toInt()
+                )
+            )
             .into(artworkView)
     }
 }

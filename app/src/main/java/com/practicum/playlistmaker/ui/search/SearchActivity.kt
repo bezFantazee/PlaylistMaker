@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -94,22 +93,22 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(_root_ide_package_.com.practicum.playlistmaker.R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.activity_search)) { v, insets ->
+        setContentView(R.layout.activity_search)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         //реализация ввода в поиск
-        editText = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.search_input)
-        val clearButton = findViewById<ImageView>(_root_ide_package_.com.practicum.playlistmaker.R.id.clear_button)
-        progressBar = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.progressBar) //визулизация загрузки
+        editText = findViewById(R.id.search_input)
+        val clearButton = findViewById<ImageView>(R.id.clear_button)
+        progressBar = findViewById(R.id.progressBar) //визулизация загрузки
 
         clearButton.setOnClickListener { //логика работы кнопки очистки пользовательского ввода
             editText.setText("")
 
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
 
             editText.clearFocus()
@@ -133,26 +132,26 @@ class SearchActivity : AppCompatActivity() {
 
         //кнопки навигации
 
-        val backButton = findViewById<ImageView>(_root_ide_package_.com.practicum.playlistmaker.R.id.back_button) //кнопка возвращения назад
+        val backButton = findViewById<ImageView>( R.id.back_button) //кнопка возвращения назад
 
         backButton.setOnClickListener {
             finish()
         }
 
         //список треков
-        tracksRecyclerView = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.tracks_list)
+        tracksRecyclerView = findViewById( R.id.tracks_list)
         tracksRecyclerView.layoutManager= LinearLayoutManager(this)
 
         tracksRecyclerView.adapter = tracksAdapter
 
-        searchPlaceHolderImg = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.search_placeholder)
-        searchPlaceHolderText = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.placeholder_message)
-        searchPlaceHolderExtraMessage = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.placeholder_extra_message)
+        searchPlaceHolderImg = findViewById( R.id.search_placeholder)
+        searchPlaceHolderText = findViewById( R.id.placeholder_message)
+        searchPlaceHolderExtraMessage = findViewById( R.id.placeholder_extra_message)
 
         //обновление загрузки
         searchTracksInteractor = Creator.provideTracksInteractor()
 
-        searchUpdateButton = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.update_button)
+        searchUpdateButton = findViewById( R.id.update_button)
         searchUpdateButton.visibility = View.GONE
         searchUpdateButton.setOnClickListener {
             showPlaceholder("", "")
@@ -161,15 +160,15 @@ class SearchActivity : AppCompatActivity() {
         }
 
         //история поиска
-        val historyTracksContainer: LinearLayout = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.search_history)
+        val historyTracksContainer: LinearLayout = findViewById( R.id.search_history)
 
-        historyTracksRecycleView = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.history_tracks_list)
+        historyTracksRecycleView = findViewById( R.id.history_tracks_list)
         historyTracksRecycleView.layoutManager = LinearLayoutManager(this)
         historyTracksRecycleView.adapter = historyTracksAdapter
-        searchHistoryText = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.search_history_text)
-        searchHistoryClearButton = findViewById(_root_ide_package_.com.practicum.playlistmaker.R.id.clear_history_button)
+        searchHistoryText = findViewById( R.id.search_history_text)
+        searchHistoryClearButton = findViewById( R.id.clear_history_button)
 
-        tracksPreferenceInteractor = Creator.providePreferenceInteractor(this, SEARCH_PREFERENCES)
+        tracksPreferenceInteractor = Creator.providePreferenceInteractor(SEARCH_PREFERENCES)
         searchHistoryClearButton.setOnClickListener {
             tracksPreferenceInteractor.clearSavedTracks()
             historyTracks.clear()
@@ -221,11 +220,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, AMOUNT_DEF)
-        val editText = findViewById<EditText>(_root_ide_package_.com.practicum.playlistmaker.R.id.search_input)
+        val editText = findViewById<EditText>( R.id.search_input)
         editText.setText(searchText)
 
         //восстановление кнопки очистки
-        val clearButton = findViewById<ImageView>(_root_ide_package_.com.practicum.playlistmaker.R.id.clear_button)
+        val clearButton = findViewById<ImageView>( R.id.clear_button)
         clearButton.visibility = clearButtonVisibility(searchText)
     }
 
@@ -285,41 +284,6 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             })
-
-//            tracksService.search(editText.text.toString())
-//                .enqueue(object: Callback<TracksResponse>{
-//                    override fun onResponse(
-//                        call: Call<TracksResponse?>,
-//                        response: Response<TracksResponse?>
-//                    ) {
-//                        progressBar.visibility = View.GONE
-//                        if(response.isSuccessful()) {
-//                            tracks.clear()
-//                            val body = response.body()?.results
-//                            if (body?.isNotEmpty() == true) {
-//                                tracksRecyclerView.visibility = View.VISIBLE
-//                                tracks.addAll(body)
-//                                tracksAdapter.notifyDataSetChanged()
-//                                showPlaceholder("", "")//убираем заглушку
-//                            } else {
-//                                showPlaceholder(getString(_root_ide_package_.com.practicum.playlistmaker.R.string.empty_search).toString(), "") //показываем заглушку(ничего не найдено)
-//                            }
-//                        } else {
-//                            showPlaceholder(getString(_root_ide_package_.com.practicum.playlistmaker.R.string.connect_error).toString(), getString(
-//                                _root_ide_package_.com.practicum.playlistmaker.R.string.extra_connect_error).toString())//показываем заглушку(ошибка подключения)
-//                        }
-//                    }
-//
-//                    override fun onFailure(
-//                        call: Call<TracksResponse?>,
-//                        t: Throwable
-//                    ) {
-//                        progressBar.visibility = View.GONE
-//                        showPlaceholder(getString(_root_ide_package_.com.practicum.playlistmaker.R.string.connect_error).toString(), getString(
-//                            _root_ide_package_.com.practicum.playlistmaker.R.string.extra_connect_error).toString()) //показываем заглушку(ошибка подключения)
-//                    }
-//
-//                })
         }
 
     }
@@ -333,13 +297,13 @@ class SearchActivity : AppCompatActivity() {
             tracksRecyclerView.visibility = View.GONE
             searchPlaceHolderText.text = text
             if(extraText.isNotEmpty()){
-                searchPlaceHolderImg.setImageResource(_root_ide_package_.com.practicum.playlistmaker.R.drawable.connect_error_placeholder)
+                searchPlaceHolderImg.setImageResource( R.drawable.connect_error_placeholder)
                 searchPlaceHolderExtraMessage.visibility = View.VISIBLE
                 searchPlaceHolderExtraMessage.text = extraText
 
                 searchUpdateButton.visibility = View.VISIBLE
             } else {
-                searchPlaceHolderImg.setImageResource(_root_ide_package_.com.practicum.playlistmaker.R.drawable.ic_empty_media_library)
+                searchPlaceHolderImg.setImageResource( R.drawable.ic_empty_media_library)
                 searchUpdateButton.visibility = View.GONE
             }
         } else {

@@ -29,7 +29,7 @@ class TracksAdapter(
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
             //сохранение в историю поиска
-            val trackPreferenceInteractor = Creator.providePreferenceInteractor(holder.itemView.context, SearchActivity.SEARCH_PREFERENCES)
+            val trackPreferenceInteractor = Creator.providePreferenceInteractor(SearchActivity.SEARCH_PREFERENCES)
             trackPreferenceInteractor.saveTrack(track, TRACK_KEY)
             //открытие аудиоплеера
             onItemClick(track)

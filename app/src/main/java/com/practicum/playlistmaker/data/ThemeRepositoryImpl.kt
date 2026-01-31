@@ -11,5 +11,4 @@ class ThemeRepositoryImpl(private val sharedPreferenceClient: SharedPreferenceCl
     override fun getCurrentTheme(key: String): String? {
         return sharedPreferenceClient.get(key)
     }
-
 }

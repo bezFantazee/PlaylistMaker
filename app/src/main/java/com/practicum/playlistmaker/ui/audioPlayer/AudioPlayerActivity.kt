@@ -24,14 +24,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.domain.models.PlayerState
 
 class AudioPlayerActivity: AppCompatActivity() {
     companion object {
         private const val UPDATE_TIMETRACK_TIME = 300L
-    }
-
-    enum class PlayerState {
-        DEFAULT, PREPARED, PLAYING, PAUSE
     }
 
     private var playerState = PlayerState.DEFAULT

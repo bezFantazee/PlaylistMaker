@@ -17,6 +17,10 @@ import com.practicum.playlistmaker.ui.mainUi.PREFERENCES
 import com.practicum.playlistmaker.ui.mainUi.THEME_KEY
 
 class SettingsActivity : AppCompatActivity() {
+    companion object{
+        const val DARK_THEME = "Темная тема"
+        const val LIGHT_THEME = "Светлая тема"
+    }
     private lateinit var themeInteractor: ThemeInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +42,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         //кнопка темная тема
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeInteractor = Creator.provideThemeInteractor(this, PREFERENCES)
+        themeInteractor = Creator.provideThemeInteractor(PREFERENCES)
 
         if (themeInteractor.getCurrentTheme(THEME_KEY) == DARK_THEME){
             themeSwitcher.isChecked = true
@@ -47,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            themeInteractor.saveTheme(if (checked) DARK_THEME else LIGHT_THEME, PREFERENCES)
         }
 
         //кнопка поделиться

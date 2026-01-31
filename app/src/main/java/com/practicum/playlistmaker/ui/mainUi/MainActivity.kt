@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.ui.mediaLibrary.MediaLibraryActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.settings.SettingsActivity
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        //ницализация класса для зависимостей
+        Creator.initialize(this)
 
         //установка кнопки поиска(анинимный класс)
         val searchButton = findViewById<Button>(R.id.search_button)

@@ -9,6 +9,7 @@
     android:theme="@style/Base.Theme.PlaylistMaker">
 
     <LinearLayout
+        android:id="@+id/headContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/title_margin_top"
@@ -53,6 +54,7 @@
             app:srcCompat="@drawable/ic_search" />
 
         <FrameLayout
+            android:id="@+id/editTextContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -186,61 +188,4 @@
         android:letterSpacing="0"
         android:paddingRight="0dp"
         android:paddingLeft="0dp"/>
-
-<!--    <ImageView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:background="@color/grey" />-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="56dp"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:orientation="horizontal"-->
-
-<!--        android:padding="5dp">-->
-
-<!--        <LinearLayout style="@style/NavigationPanel">-->
-
-<!--            <ImageView-->
-<!--                style="@style/Icon"-->
-<!--                app:srcCompat="@drawable/ic_search"-->
-<!--                app:tint="@color/blue" />-->
-
-<!--            <TextView-->
-<!--                style="@style/NavigationPanel"-->
-<!--                android:text="@string/search"-->
-<!--                android:textColor="@color/blue" />-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/media_library_button"-->
-<!--            style="@style/NavigationPanel"-->
-<!--            android:foreground="?attr/selectableItemBackground">-->
-
-<!--            <ImageView-->
-<!--                style="@style/Icon"-->
-<!--                app:srcCompat="@drawable/ic_media_library"-->
-<!--                app:tint="?attr/colorOnPrimary" />-->
-
-<!--            <TextView-->
-<!--                style="@style/NavigationPanel"-->
-<!--                android:text="@string/media_library" />-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/settings_button"-->
-<!--            style="@style/NavigationPanel"-->
-<!--            android:foreground="?attr/selectableItemBackground">-->
-
-<!--            <ImageView-->
-<!--                style="@style/Icon"-->
-<!--                app:srcCompat="@drawable/ic_settings"-->
-<!--                app:tint="?attr/colorOnPrimary" />-->
-
-<!--            <TextView-->
-<!--                style="@style/NavigationPanel"-->
-<!--                android:text="@string/settings" />-->
-<!--        </LinearLayout>-->
-<!--    </LinearLayout>-->
 </LinearLayout>

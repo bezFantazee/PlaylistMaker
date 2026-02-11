@@ -1,0 +1,47 @@
+package com.practicum.playlistmaker.search.ui.presenter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.ui.presenter.TracksViewHolder
+import com.practicum.playlistmaker.search.ui.activity.SearchActivity
+import com.practicum.playlistmaker.search.ui.activity.TRACK_KEY
+
+class TracksAdapter(
+    private val tracks: List<Track>,
+    private val onItemClick: (Track) -> Unit
+): RecyclerView.Adapter<TracksViewHolder> () {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TracksViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.activity_track, parent, false)
+        return TracksViewHolder(view)
+    }
+
+    override fun onBindViewHolder(
+        holder: TracksViewHolder,
+        position: Int
+    ) {
+        val track = tracks[position]
+        holder.bind(tracks[position])
+        holder.itemView.setOnClickListener {
+            //сохранение в историю поиска
+            val trackPreferenceInteractor = Creator.providePreferenceInteractor(
+                SearchActivity.Companion.SEARCH_PREFERENCES,
+                TRACK_KEY
+            )
+            trackPreferenceInteractor.saveTrack(track)
+            //открытие аудиоплеера
+            onItemClick(track)
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return tracks.size
+    }
+
+}

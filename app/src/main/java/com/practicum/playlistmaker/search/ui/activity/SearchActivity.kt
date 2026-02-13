@@ -257,6 +257,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         showPlaceholder(text, extraText)
     }
     private fun showSearchEmpty(text: String){
+        binding.progressBar.visibility = View.GONE
         showPlaceholder(text, "")
     }
     // состояния экрана история поиска

@@ -9,6 +9,7 @@
     android:id="@+id/settings">
 
     <LinearLayout
+        android:id="@+id/headContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/title_margin_top"
@@ -33,6 +34,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/switchContainer"
         style="@style/SettingsButton"
         android:foreground="@null"
         android:layout_width="match_parent"

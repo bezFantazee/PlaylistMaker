@@ -18,6 +18,7 @@
         android:layout_height="@dimen/medium_icon_size" />
 
     <LinearLayout
+        android:id="@+id/trackDescriptionContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

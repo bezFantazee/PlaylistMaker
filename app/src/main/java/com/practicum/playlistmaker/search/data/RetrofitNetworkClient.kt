@@ -4,9 +4,9 @@ import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.data.dto.Response
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 
-class RetrofitNetworkClient: NetworkClient {
-    private val tracksService = Creator.provideTrackApiService()
-
+class RetrofitNetworkClient(
+    private val tracksService: TrackApiService
+): NetworkClient {
     override fun doRequest(dto: Any): Response {
         if (dto is TrackSearchRequest) {
             return try {

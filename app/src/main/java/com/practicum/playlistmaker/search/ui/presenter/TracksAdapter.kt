@@ -2,7 +2,9 @@ package com.practicum.playlistmaker.search.ui.presenter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -29,12 +31,6 @@ class TracksAdapter(
         val track = tracks[position]
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-            //сохранение в историю поиска
-            val trackPreferenceInteractor = Creator.providePreferenceInteractor(
-                SearchActivity.Companion.SEARCH_PREFERENCES,
-                TRACK_KEY
-            )
-            trackPreferenceInteractor.saveTrack(track)
             //открытие аудиоплеера
             onItemClick(track)
         }

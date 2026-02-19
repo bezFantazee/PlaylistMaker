@@ -26,17 +26,6 @@ class AudioPlayerActivity: AppCompatActivity() {
     private lateinit var viewModel: PlayerViewModel
     private lateinit var binding: ActivityAudioPlayerBinding
 
-//    private lateinit var trackCoverView: ImageView
-//    private lateinit var trackNameView: TextView
-//    private lateinit var artistNameView: TextView
-//    private lateinit var trackTimeView: TextView
-//    private lateinit var trackAlbumView: TextView
-//    private lateinit var trackYearView: TextView
-//    private lateinit var trackGenreView: TextView
-//    private lateinit var trackCountryView: TextView
-//    private lateinit var playButton: ImageButton
-//    private lateinit var trackTimeText: TextView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

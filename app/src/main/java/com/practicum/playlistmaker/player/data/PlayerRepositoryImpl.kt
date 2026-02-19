@@ -16,4 +16,12 @@ class PlayerRepositoryImpl(
     override fun preparePlayer(url: String) {
         audioPlayerClient.prepare(url)
     }
+
+    override fun getCurrentTime(): Int {
+        return audioPlayerClient.getTime()
+    }
+
+    override fun resetMediaPlayer() {
+        audioPlayerClient.resetMediaPlayer()
+    }
 }

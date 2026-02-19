@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker.creator
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import com.practicum.playlistmaker.settings.data.ThemeRepositoryImpl
 import com.practicum.playlistmaker.history.data.TracksHistoryRepositoryImpl
 import com.practicum.playlistmaker.search.data.SearchTracksRepositoryImpl
@@ -17,6 +19,13 @@ import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.settings.domain.ThemeRepository
 import com.practicum.playlistmaker.history.domain.TracksHistoryInteractor
 import com.practicum.playlistmaker.history.domain.TracksHistoryRepository
+import com.practicum.playlistmaker.player.data.AudioPlayerClient
+import com.practicum.playlistmaker.player.data.MediaPlayerAudioPlayerClient
+import com.practicum.playlistmaker.player.data.PlayerRepositoryImpl
+import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
+import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.PlayerInteractorImpl
+import com.practicum.playlistmaker.player.domain.PlayerRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.settings.domain.model.ThemeState
 import com.practicum.playlistmaker.sharing.data.ExternalNavigatorImpl
@@ -34,6 +43,8 @@ object Creator {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
+    private val gson = Gson()
+
     fun initialize(context: Context) {
         if(! ::appContext.isInitialized) {
             appContext = context.applicationContext
@@ -46,27 +57,27 @@ object Creator {
         return SearchTracksInteractorImpl(getTracksRemoteRepository())
     }
 
-    private fun getTracksHistoryRepository(prefName: String, key: String): TracksHistoryRepository {
+    private fun getTracksHistoryRepository(sharedPref: SharedPreferences, key: String): TracksHistoryRepository {
         return TracksHistoryRepositoryImpl(PrefsStorageClient(
-            appContext,
+            sharedPref,
             key,
-            prefName,
+            gson,
             object : TypeToken<List<Track>>() {}.type ))
     }
-    fun providePreferenceInteractor(prefName: String, key: String): TracksHistoryInteractor {
-        return TracksHistoryInteractorImpl(getTracksHistoryRepository(prefName, key))
+    fun providePreferenceInteractor(sharedPref: SharedPreferences, key: String): TracksHistoryInteractor {
+        return TracksHistoryInteractorImpl(getTracksHistoryRepository(sharedPref, key))
     }
 
-    private fun getThemeRepository(prefName: String, key: String): ThemeRepository {
+    private fun getThemeRepository(sharedPref: SharedPreferences, key: String): ThemeRepository {
         return ThemeRepositoryImpl(PrefsStorageClient(
-            appContext,
+            sharedPref,
             key,
-            prefName,
+            gson,
             object : TypeToken<String>() {}.type))
     }
 
-    fun provideThemeInteractor(prefName: String, key: String): ThemeInteractor {
-        return ThemeInteractorImpl(getThemeRepository(prefName, key))
+    fun provideThemeInteractor(sharedPref: SharedPreferences, key: String): ThemeInteractor {
+        return ThemeInteractorImpl(getThemeRepository(sharedPref, key))
     }
 
     private fun getExternalNavigator(context: Context): ExternalNavigator {
@@ -78,6 +89,13 @@ object Creator {
             getExternalNavigator(context),
             context
         )
+    }
+
+    private fun getAudioPlayerClient(completionListener: OnTrackCompletionListener): PlayerRepository {
+        return PlayerRepositoryImpl(MediaPlayerAudioPlayerClient(completionListener))
+    }
+    fun providePlayerInteractor(completionListener: OnTrackCompletionListener): PlayerInteractor {
+        return PlayerInteractorImpl(getAudioPlayerClient(completionListener))
     }
 
     fun provideTrackApiService(): TrackApiService {

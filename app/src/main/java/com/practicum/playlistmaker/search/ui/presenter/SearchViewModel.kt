@@ -90,17 +90,11 @@ class SearchViewModel(
                             SearchResult.NoResults -> {
                                 renderSearchState(
                                     SearchState.Empty(context.getString(R.string.empty_search))
-//                                            progressBar.visibility = View.GONE
-//                                            showPlaceholder(getString(R.string.empty_search), "") //показываем заглушку(ничего не найдено)
-//
                                 )
                             }
                             SearchResult.NetWorkError -> {
                                 renderSearchState(
                                     SearchState.Error(context.getString(R.string.connect_error), context.getString(R.string.extra_connect_error))
-//                                            progressBar.visibility = View.GONE
-//                                            showPlaceholder(getString(R.string.connect_error), getString(
-//                                                R.string.extra_connect_error)) //показываем заглушку(ошибка подключения)
                                 )
                             }
                         }
@@ -148,6 +142,10 @@ class SearchViewModel(
         renderHistoryState(
             HistoryState.Empty
         )
+    }
+
+    fun saveHistory(track: Track){
+        tracksPreferenceInteractor.saveTrack(track)
     }
 
     private fun renderHistoryState(state: HistoryState) {

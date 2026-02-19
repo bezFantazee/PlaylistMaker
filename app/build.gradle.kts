@@ -41,9 +41,10 @@ android {
 }
 
 dependencies {
-    implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.koin.android)
+    implementation(libs.glide)
     implementation(libs.firebase.crashlytics.buildtools)
-    kapt("com.github.bumptech.glide:compiler:5.0.5")
+    kapt(libs.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

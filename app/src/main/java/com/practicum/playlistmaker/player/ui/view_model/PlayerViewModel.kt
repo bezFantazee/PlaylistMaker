@@ -9,28 +9,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
-
-    companion object {
-        private const val UPDATE_TIMETRACK_TIME = 300L
-
-        fun getFabric(trackUrl: String?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(trackUrl)
-            }
-        }
-    }
+    //LiveData
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.DEFAULT)
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
-    private val timeLiveData = MutableLiveData<String>("00:00")
+    private val timeLiveData = MutableLiveData<String>(formatTime(0))
     fun observeTime(): LiveData<String> = timeLiveData
 
+    //Interactors
+    private val playerInteractor = Creator.providePlayerInteractor(object : OnTrackCompletionListener{
+        override fun OnTrackPrepared() {
+            playerStateLiveData.value = PlayerState.PREPARED
+        }
+
+        override fun onTrackCompleted() {
+            playerStateLiveData.value = PlayerState.PREPARED
+            resetTimer()
+        }
+    })
+
     private val handler = Handler(Looper.getMainLooper())
-    private val mediaPlayer = MediaPlayer()
+    //private val mediaPlayer = MediaPlayer()
     private val timerRunnable = Runnable {
         if (playerStateLiveData.value == PlayerState.PLAYING) {
             startTimerUpdate()
@@ -44,7 +49,7 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
     //состояния
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer.release()
+        playerInteractor.onCleared()
         resetTimer()
     }
 
@@ -61,13 +66,13 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
 
     //функции для управления медиаплеером
     private fun startPlayer() {
-        mediaPlayer.start()
+        playerInteractor.startPlayer()
         playerStateLiveData.value = PlayerState.PLAYING
         startTimerUpdate()
     }
     private fun pausePlayer() {
         pauseTimer()
-        mediaPlayer.pause()
+        playerInteractor.pausePlayer()
         playerStateLiveData.value = PlayerState.PAUSE
     }
 
@@ -75,20 +80,12 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
         if(trackUrl.isNullOrEmpty()){
             return
         }
-        mediaPlayer.setDataSource(trackUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.value = PlayerState.PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerStateLiveData.value = PlayerState.PREPARED
-            resetTimer()
-        }
+        playerInteractor.preparePlayer(trackUrl)
     }
 
     //устанока времени таймера воспроизведения
     private fun startTimerUpdate() {
-        timeLiveData.value = formatTime(mediaPlayer.currentPosition)
+        timeLiveData.value = formatTime(playerInteractor.getCurrentTime())
         handler.postDelayed(timerRunnable, UPDATE_TIMETRACK_TIME)
     }
     private fun pauseTimer() {
@@ -100,5 +97,15 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
     }
     private fun formatTime(mSeconds: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mSeconds)
+    }
+
+    companion object {
+        private const val UPDATE_TIMETRACK_TIME = 300L
+
+        fun getFabric(trackUrl: String?): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(trackUrl)
+            }
+        }
     }
 }

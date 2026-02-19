@@ -56,6 +56,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
     private val tracks = mutableListOf<Track>()
     private val tracksAdapter =
         TracksAdapter(tracks) { track ->
+            viewModel.saveHistory(track)
             val intent = Intent(
                 this,
                 AudioPlayerActivity::class.java
@@ -91,7 +92,8 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
             insets
         }
         //viewModel и liveData
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory(this.applicationContext, Creator.provideTracksInteractor(), Creator.providePreferenceInteractor(SEARCH_PREFERENCES, TRACK_KEY)))
+        val sharedPref = getSharedPreferences(SEARCH_PREFERENCES, MODE_PRIVATE)
+        viewModel = ViewModelProvider(this, SearchViewModel.getFactory(this.applicationContext, Creator.provideTracksInteractor(), Creator.providePreferenceInteractor(sharedPref, TRACK_KEY)))
             .get(SearchViewModel::class.java)
 
         viewModel.observeSearchState().observe(this) {
@@ -159,29 +161,13 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
 
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
-//            historyTracks.clear()
-//            historyTracksAdapter.notifyDataSetChanged()
-//            historyTracksContainer.visibility = View.GONE
         }
         binding.searchInput.setOnFocusChangeListener{ view, hasFocus ->
             if (hasFocus && binding.searchInput.text.isEmpty()){
                 runOnUiThread {
-//                    tracksPreferenceInteractor.getTracks(object: TracksHistoryInteractor.TracksHistoryConsumer {
-//                        override fun consume(searchHistory: List<Track>) {
-//                            historyTracks.clear()
-//                            historyTracks.addAll(searchHistory)
-//                            historyTracksAdapter.notifyDataSetChanged()
-//                        }
-//                    })
-//                    if(historyTracks.isNotEmpty()){
-//                        historyTracksContainer.visibility = View.VISIBLE
-//                    }
                     viewModel.showHistory()
                 }
             } else {
-//                runOnUiThread {
-//                    historyTracksContainer.visibility = View.GONE
-//                }
                 viewModel.hideHistory()
             }
 
@@ -189,23 +175,8 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
 
         binding.searchInput.doOnTextChanged { s, start, before, count ->
             if (binding.searchInput.hasFocus() && s?.isEmpty() == true){
-//                runOnUiThread {
-//                    tracksPreferenceInteractor.getTracks(object: TracksHistoryInteractor.TracksHistoryConsumer {
-//                        override fun consume(searchHistory: List<Track>) {
-//                            historyTracks.clear()
-//                            historyTracks.addAll(searchHistory)
-//                            historyTracksAdapter.notifyDataSetChanged()
-//                        }
-//                    })
-//                    if(historyTracks.isNotEmpty()){
-//                        historyTracksContainer.visibility = View.VISIBLE
-//                    }
-//                }
                 viewModel.showHistory()
             } else {
-//                runOnUiThread {
-//                    historyTracksContainer.visibility = View.GONE
-//                }
                 viewModel.hideHistory()
             }
         }

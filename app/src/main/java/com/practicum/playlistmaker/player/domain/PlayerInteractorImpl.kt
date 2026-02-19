@@ -15,4 +15,12 @@ class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInt
         }
         repository.preparePlayer(url)
     }
+
+    override fun getCurrentTime(): Int {
+        return repository.getCurrentTime()
+    }
+
+    override fun onCleared() {
+        repository.resetMediaPlayer()
+    }
 }

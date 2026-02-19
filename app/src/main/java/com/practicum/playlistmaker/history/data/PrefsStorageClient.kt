@@ -1,23 +1,17 @@
 package com.practicum.playlistmaker.history.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import java.lang.reflect.Type
 
 
 class PrefsStorageClient<T>(
-    context: Context,
+    private val sharedPref: SharedPreferences,
     private val dataKey: String,
-    prefName: String,
+    private val gson: Gson,
     private val type: Type
 ): StorageClient<T> {
-
-    private val sharedPref = context.getSharedPreferences(
-        prefName,
-        Context.MODE_PRIVATE
-    )
-
-    private val gson = Gson()
 
     override fun save(data: T) {
         sharedPref.edit()

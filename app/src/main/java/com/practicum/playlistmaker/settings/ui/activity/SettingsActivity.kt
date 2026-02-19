@@ -42,8 +42,11 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val sharedPref = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+
+
         sharingInteractor = Creator.provideSharingInteractor(this.applicationContext)
-        settingsInteractor = Creator.provideThemeInteractor(PREFERENCES, THEME_KEY)
+        settingsInteractor = Creator.provideThemeInteractor(sharedPref, THEME_KEY)
 
         //Инициализация viewModel
         viewModel = ViewModelProvider(this, SettingsViewModel.getFactory(sharingInteractor, settingsInteractor))

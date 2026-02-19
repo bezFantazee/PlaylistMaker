@@ -4,4 +4,6 @@ interface PlayerRepository {
     fun pausePlayer()
     fun startPlayer()
     fun preparePlayer(url: String)
+    fun getCurrentTime(): Int
+    fun resetMediaPlayer()
 }

@@ -25,4 +25,12 @@ class MediaPlayerAudioPlayerClient(
             completionListener.onTrackCompleted()
         }
     }
+
+    override fun getTime(): Int {
+        return mediaPlayer.currentPosition
+    }
+
+    override fun resetMediaPlayer() {
+        mediaPlayer.reset()
+    }
 }

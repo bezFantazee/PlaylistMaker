@@ -4,8 +4,6 @@ interface PlayerInteractor {
     fun pausePlayer()
     fun startPlayer()
     fun preparePlayer(url: String?)
-
-    interface Consumer{
-        fun consume()
-    }
+    fun getCurrentTime(): Int
+    fun onCleared()
 }

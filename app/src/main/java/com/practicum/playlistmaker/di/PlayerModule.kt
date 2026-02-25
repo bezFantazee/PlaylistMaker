@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.di
 
+import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.data.AudioPlayerClient
 import com.practicum.playlistmaker.player.data.MediaPlayerAudioPlayerClient
 import com.practicum.playlistmaker.player.data.PlayerRepositoryImpl
@@ -15,9 +16,12 @@ import org.koin.dsl.module
 val playerModule = module {
     single<OnTrackCompletionListener> { TrackCompletionListenerHolder() }
     single { get<OnTrackCompletionListener>() as TrackCompletionListenerHolder }
+    single {
+        MediaPlayer()
+    }
     //data
     factory<AudioPlayerClient> {
-        MediaPlayerAudioPlayerClient(get())
+        MediaPlayerAudioPlayerClient(get(), get())
     }
 
     //repository

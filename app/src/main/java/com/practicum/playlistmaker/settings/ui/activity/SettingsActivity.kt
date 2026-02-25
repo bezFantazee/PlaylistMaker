@@ -32,14 +32,15 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         //работа с viewModel
-        viewModel.observeThemeState().observe(this) {
-            AppCompatDelegate.setDefaultNightMode(
-                if(it == ThemeState.DARK_THEME){
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else{
-                    AppCompatDelegate.MODE_NIGHT_NO
-                }
-            )
+        viewModel.observeThemeState().observe(this) { state ->
+            val mode = when(state) {
+                ThemeState.DARK_THEME -> AppCompatDelegate.MODE_NIGHT_YES
+                ThemeState.LIGHT_THEME -> AppCompatDelegate.MODE_NIGHT_NO
+            }
+            AppCompatDelegate.setDefaultNightMode(mode)
+            
+            // Обновляем состояние переключателя
+            binding.themeSwitcher.isChecked = state == ThemeState.DARK_THEME
         }
 
         //установка кнопики "назад"

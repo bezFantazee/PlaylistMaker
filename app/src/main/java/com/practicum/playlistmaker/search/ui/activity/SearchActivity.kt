@@ -86,14 +86,8 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
             insets
         }
         //viewModel и liveData
-        val sharedPref = getSharedPreferences(SEARCH_PREFERENCES, MODE_PRIVATE)
-
-        viewModel.observeSearchState().observe(this) {
-            renderSearch(it)
-        }
-
-        viewModel.observeHistoryState().observe(this) {
-            renderHistory(it)
+        viewModel.observeScreenState().observe(this) {
+            render(it)
         }
 
         //реализация ввода в поиск
@@ -191,15 +185,19 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         clearButton.visibility = clearButtonVisibility(searchText)
     }
 
-    //состояния экрана поиск
-    private fun renderSearch(searchState: SearchState) {
+    //состояния экрана
+    private fun render(searchState: SearchState) {
         when(searchState) {
             is SearchState.Loading -> showSearchLoading()
             is SearchState.Content -> showSearchContent(searchState.tracks)
             is SearchState.Error -> showSearchError(searchState.errorMessage, searchState.extraMessage)
             is SearchState.Empty -> showSearchEmpty(searchState.message)
+            is SearchState.EmptyHistory -> showHistoryEmpty()
+            is SearchState.ClearedHistory -> clearHistory()
+            is SearchState.ContentHistory -> showHistoryContent(searchState.tracks)
         }
     }
+    //состояния экрана поиск
     private fun showSearchLoading(){
         binding.searchPlaceholder.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
@@ -224,18 +222,11 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         showPlaceholder(text, "")
     }
     // состояния экрана история поиска
-    private fun renderHistory(historyState: HistoryState) {
-        when(historyState){
-            is HistoryState.Empty -> showHistoryEmpty()
-            is HistoryState.Content -> showHistoryContent(historyState.data)
-            is HistoryState.Cleared -> clearHistory()
-        }
-    }
-
     private fun showHistoryEmpty(){
         binding.searchHistory.visibility = View.GONE
     }
     private fun showHistoryContent(content: List<Track>){
+        binding.tracksList.visibility = View.GONE
         binding.searchHistory.visibility = View.VISIBLE
         historyTracks.clear()
         historyTracks.addAll(content)

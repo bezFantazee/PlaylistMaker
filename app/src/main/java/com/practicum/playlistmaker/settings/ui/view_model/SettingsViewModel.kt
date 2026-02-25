@@ -16,10 +16,10 @@ class SettingsViewModel(
     fun observeThemeState(): LiveData<ThemeState> = themeStateLiveData
 
     fun switchTheme(){
-        if (themeStateLiveData.value == ThemeState.LIGHT_THEME) {
-            themeStateLiveData.value = ThemeState.DARK_THEME
-        } else {
-            themeStateLiveData.value = ThemeState.LIGHT_THEME
+        themeStateLiveData.value = when(themeStateLiveData.value) {
+            ThemeState.LIGHT_THEME -> ThemeState.DARK_THEME
+            ThemeState.DARK_THEME -> ThemeState.LIGHT_THEME
+            null -> ThemeState.LIGHT_THEME
         }
 
         settingsInteractor.saveTheme(themeStateLiveData.value)

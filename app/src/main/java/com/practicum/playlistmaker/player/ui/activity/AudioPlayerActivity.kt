@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.player.ui.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.TRACK_KEY
@@ -53,12 +53,11 @@ class AudioPlayerActivity: AppCompatActivity() {
         }
 
         //работа с viewModel
-        viewModel.observeTime().observe(this) {
-            binding.time.text = it
-        }
+//        viewModel.observeTime().observe(this) {
+//            binding.time.text = it
+//        }
         viewModel.observePlayerState().observe(this) {
-            changeButtonText(it == PlayerState.PLAYING)
-            enableButton(it != PlayerState.DEFAULT)
+            render(it)
         }
 
         //установка кнопики "назад"
@@ -123,6 +122,27 @@ class AudioPlayerActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
+    }
+    //состояния экрана
+    private fun render(state: PlayerState){
+        when(state) {
+            PlayerState.Default -> {
+                enableButton(false)
+            }
+            PlayerState.Prepared -> {
+                enableButton(true)
+            }
+            is PlayerState.Playing -> {
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(true)
+            }
+            is PlayerState.Paused -> {
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(false)
+            }
+        }
     }
     //вспомогательные функции
     private fun enableButton(isEnabled: Boolean) {

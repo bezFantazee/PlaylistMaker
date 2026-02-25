@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
 import com.practicum.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.TrackCompletionListenerHolder
-import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.player.ui.PlayerState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -19,14 +19,14 @@ class PlayerViewModel(
     private var listenerHolder: TrackCompletionListenerHolder
 ) : ViewModel() {
     //LiveData
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.DEFAULT)
+    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default)
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
-    private val timeLiveData = MutableLiveData<String>(formatTime(0))
-    fun observeTime(): LiveData<String> = timeLiveData
+//    private val timeLiveData = MutableLiveData<String>(formatTime(0))
+//    fun observeTime(): LiveData<String> = timeLiveData
 
     private val handler = Handler(Looper.getMainLooper())
     private val timerRunnable = Runnable {
-        if (playerStateLiveData.value == PlayerState.PLAYING) {
+        if (playerStateLiveData.value is PlayerState.Playing) {
             startTimerUpdate()
         }
     }
@@ -34,11 +34,11 @@ class PlayerViewModel(
     init {
         listenerHolder.delegate = object : OnTrackCompletionListener {
             override fun OnTrackPrepared() {
-                playerStateLiveData.value = PlayerState.PREPARED
+                playerStateLiveData.value = PlayerState.Prepared
             }
 
             override fun onTrackCompleted() {
-                playerStateLiveData.value = PlayerState.PREPARED
+                playerStateLiveData.value = PlayerState.Prepared
                 resetTimer()
             }
         }
@@ -57,10 +57,10 @@ class PlayerViewModel(
     }
     fun onPlayButtonClicked() {
         when(playerStateLiveData.value) {
-            PlayerState.PLAYING -> {
+            is PlayerState.Playing -> {
                 pausePlayer()
             }
-            PlayerState.PAUSE -> {
+            is PlayerState.Paused -> {
                 startPlayer()
             }
             else -> startPlayer()
@@ -70,13 +70,17 @@ class PlayerViewModel(
     //функции для управления медиаплеером
     private fun startPlayer() {
         playerInteractor.startPlayer()
-        playerStateLiveData.value = PlayerState.PLAYING
         startTimerUpdate()
+        playerStateLiveData.value = PlayerState.Playing(
+            formatTime(playerInteractor.getCurrentTime())
+        )
     }
     private fun pausePlayer() {
         pauseTimer()
         playerInteractor.pausePlayer()
-        playerStateLiveData.value = PlayerState.PAUSE
+        playerStateLiveData.value = PlayerState.Paused(
+            formatTime(playerInteractor.getCurrentTime())
+        )
     }
 
     private fun preparePlayer() {
@@ -84,12 +88,13 @@ class PlayerViewModel(
             return
         }
         playerInteractor.preparePlayer(trackUrl)
-        playerStateLiveData.value = PlayerState.PREPARED
+        playerStateLiveData.value = PlayerState.Prepared
     }
 
     //устанока времени таймера воспроизведения
     private fun startTimerUpdate() {
-        timeLiveData.value = formatTime(playerInteractor.getCurrentTime())
+        val currentTime = playerInteractor.getCurrentTime()
+        playerStateLiveData.value = PlayerState.Playing(formatTime(currentTime))
         handler.postDelayed(timerRunnable, UPDATE_TIMETRACK_TIME)
     }
     private fun pauseTimer() {
@@ -97,7 +102,9 @@ class PlayerViewModel(
     }
     private fun resetTimer() {
         handler.removeCallbacks(timerRunnable)
-        timeLiveData.value = formatTime(0)
+        playerStateLiveData.value = PlayerState.Paused(
+            formatTime(0)
+        )
     }
     private fun formatTime(mSeconds: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mSeconds)

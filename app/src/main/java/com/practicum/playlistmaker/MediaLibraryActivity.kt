@@ -5,12 +5,18 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity
+import com.practicum.playlistmaker.settings.domain.ThemeInteractor
+import com.practicum.playlistmaker.settings.domain.model.ThemeState
 import com.practicum.playlistmaker.settings.ui.activity.SettingsActivity
+import org.koin.android.ext.android.inject
 
 class MediaLibraryActivity : AppCompatActivity() {
+
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,4 +41,5 @@ class MediaLibraryActivity : AppCompatActivity() {
             startActivity(settingsIntent)
         }
     }
+
 }

@@ -5,9 +5,11 @@ import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflec
 import com.google.gson.Gson
 import com.practicum.playlistmaker.history.data.PrefsStorageClient
 import com.practicum.playlistmaker.history.data.StorageClient
+import com.practicum.playlistmaker.settings.data.ThemeManagerImpl
 import com.practicum.playlistmaker.settings.data.ThemeRepositoryImpl
 import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.settings.domain.ThemeInteractorImpl
+import com.practicum.playlistmaker.settings.domain.ThemeManager
 import com.practicum.playlistmaker.settings.domain.ThemeRepository
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -32,6 +34,10 @@ val settingsModule = module {
         )
     }
 
+    single<ThemeManager> {
+        ThemeManagerImpl(androidContext())
+    }
+
     //repository
     single<ThemeRepository> {
         ThemeRepositoryImpl(
@@ -41,7 +47,7 @@ get(named(SETTINGS_STORAGE_CLIENT))
 
     //interactors
     single<ThemeInteractor> {
-        ThemeInteractorImpl(get())
+        ThemeInteractorImpl(get(), get())
     }
 
     //viewModel

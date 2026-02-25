@@ -1,10 +1,10 @@
 package com.practicum.playlistmaker.settings.data
 
-import com.practicum.playlistmaker.history.data.PrefsStorageClient
+import com.practicum.playlistmaker.history.data.StorageClient
 import com.practicum.playlistmaker.settings.domain.ThemeRepository
 import com.practicum.playlistmaker.settings.domain.model.ThemeState
 
-class ThemeRepositoryImpl(private val prefsStorageClient: PrefsStorageClient<String>):
+class ThemeRepositoryImpl(private val prefsStorageClient: StorageClient<String>):
     ThemeRepository {
     override fun saveTheme(themeName: ThemeState) {
         prefsStorageClient.save(themeName.name)

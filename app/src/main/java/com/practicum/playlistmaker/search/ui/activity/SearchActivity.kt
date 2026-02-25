@@ -4,33 +4,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.history.domain.TracksHistoryInteractor
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.ui.HistoryState
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.presenter.SearchViewModel
 import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val TRACK_KEY = "track_key"
 
@@ -42,7 +36,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
     //viewModel
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
 
     //для поиска
     private var searchText: String = ""
@@ -93,8 +87,6 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         }
         //viewModel и liveData
         val sharedPref = getSharedPreferences(SEARCH_PREFERENCES, MODE_PRIVATE)
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory(this.applicationContext, Creator.provideTracksInteractor(), Creator.providePreferenceInteractor(sharedPref, TRACK_KEY)))
-            .get(SearchViewModel::class.java)
 
         viewModel.observeSearchState().observe(this) {
             renderSearch(it)

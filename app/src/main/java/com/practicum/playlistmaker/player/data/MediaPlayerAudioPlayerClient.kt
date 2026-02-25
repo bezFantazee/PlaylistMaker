@@ -4,7 +4,8 @@ import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
 
 class MediaPlayerAudioPlayerClient(
-    private val completionListener: OnTrackCompletionListener) : AudioPlayerClient {
+    private val completionListener: OnTrackCompletionListener
+) : AudioPlayerClient {
     private val mediaPlayer = MediaPlayer()
 
     override fun play() {

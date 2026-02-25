@@ -1,41 +1,30 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
+import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.TrackCompletionListenerHolder
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
+class PlayerViewModel(
+    private val trackUrl: String?,
+    private val playerInteractor: PlayerInteractor,
+    private var listenerHolder: TrackCompletionListenerHolder
+) : ViewModel() {
     //LiveData
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.DEFAULT)
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
     private val timeLiveData = MutableLiveData<String>(formatTime(0))
     fun observeTime(): LiveData<String> = timeLiveData
 
-    //Interactors
-    private val playerInteractor = Creator.providePlayerInteractor(object : OnTrackCompletionListener{
-        override fun OnTrackPrepared() {
-            playerStateLiveData.value = PlayerState.PREPARED
-        }
-
-        override fun onTrackCompleted() {
-            playerStateLiveData.value = PlayerState.PREPARED
-            resetTimer()
-        }
-    })
-
     private val handler = Handler(Looper.getMainLooper())
-    //private val mediaPlayer = MediaPlayer()
     private val timerRunnable = Runnable {
         if (playerStateLiveData.value == PlayerState.PLAYING) {
             startTimerUpdate()
@@ -43,6 +32,16 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
     }
 
     init {
+        listenerHolder.delegate = object : OnTrackCompletionListener {
+            override fun OnTrackPrepared() {
+                playerStateLiveData.value = PlayerState.PREPARED
+            }
+
+            override fun onTrackCompleted() {
+                playerStateLiveData.value = PlayerState.PREPARED
+                resetTimer()
+            }
+        }
         preparePlayer()
     }
 
@@ -58,8 +57,12 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
     }
     fun onPlayButtonClicked() {
         when(playerStateLiveData.value) {
-            PlayerState.PLAYING -> pausePlayer()
-            PlayerState.PAUSE -> startPlayer()
+            PlayerState.PLAYING -> {
+                pausePlayer()
+            }
+            PlayerState.PAUSE -> {
+                startPlayer()
+            }
             else -> startPlayer()
         }
     }
@@ -81,6 +84,7 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
             return
         }
         playerInteractor.preparePlayer(trackUrl)
+        playerStateLiveData.value = PlayerState.PREPARED
     }
 
     //устанока времени таймера воспроизведения
@@ -93,7 +97,7 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
     }
     private fun resetTimer() {
         handler.removeCallbacks(timerRunnable)
-        timeLiveData.value = "00:00"
+        timeLiveData.value = formatTime(0)
     }
     private fun formatTime(mSeconds: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mSeconds)
@@ -101,11 +105,5 @@ class PlayerViewModel(private val trackUrl: String?) : ViewModel() {
 
     companion object {
         private const val UPDATE_TIMETRACK_TIME = 300L
-
-        fun getFabric(trackUrl: String?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(trackUrl)
-            }
-        }
     }
 }

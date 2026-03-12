@@ -5,161 +5,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:id="@+id/media_library">
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/headContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/media_library"
-        android:textSize="@dimen/standart_text_size"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:layout_marginTop="32dp">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/featured_tracks"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black"
-                android:layout_marginTop="14dp"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/small_margin"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/playlists"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        >
-        <ImageView
-            android:layout_width="@dimen/big_icon_size"
-            android:layout_height="@dimen/big_icon_size"
-            app:srcCompat="@drawable/ic_empty_media_library"
-            android:layout_marginTop="106dp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/empty_media_library"
-            android:textColor="@color/black"
-            android:textSize="19sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            />
-    </LinearLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5dp"
+        android:orientation="horizontal">
 
-        >
-        <LinearLayout
-            android:id="@+id/search_button"
-            style="@style/NavigationPanel"
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginStart="@dimen/title_margin_start"
             android:foreground="?attr/selectableItemBackground"
-            >
-            <ImageView
-                style= "@style/Icon"
-                app:srcCompat="@drawable/ic_search"
-                app:tint="?attr/colorOnPrimary"
-                />
-            <TextView
-                style="@style/NavigationPanel"
-                android:text="@string/search"
-                />
-        </LinearLayout>
+            app:srcCompat="@drawable/ic_arrow"
+            app:tint="?attr/colorOnPrimary" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_weight="3"
-            >
-            <ImageView
-                style="@style/Icon"
-                app:srcCompat="@drawable/ic_media_library"
-                app:tint="@color/blue"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/media_library"
-                android:textColor="@color/blue"
-                android:textSize="@dimen/very_small_text"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:foreground="?attr/selectableItemBackground"
-            >
-            <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/ic_settings"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings"
-                android:textSize="@dimen/very_small_text"
-                android:textColor="@color/black"
-                />
-        </LinearLayout>
+        <TextView
+            style="@style/HeadText"
+            android:layout_marginStart="24dp"
+            android:text="@string/media_library" />
     </LinearLayout>
+    
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/mediaLibraryTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/small_margin"
+        app:tabTextAppearance="@style/CustomTabText"
+        app:tabIndicator="@drawable/tab_indicator"
+        app:tabIndicatorColor="?attr/colorOnPrimary"
+        android:backgroundTint="?attr/colorPrimary"
+        app:tabTextColor="?attr/colorOnPrimary" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/mediaLibraryViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
-
-

@@ -82,6 +82,8 @@
         <item name="android:backgroundTint">?attr/colorOnPrimary</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
         <item name="cornerRadius">54dp</item>
     </style>
 
@@ -90,5 +92,13 @@
         <item name="android:textColor">@color/text_grey</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="CustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="tabTextColor">?attr/colorOnPrimary</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
     </style>
 </resources>

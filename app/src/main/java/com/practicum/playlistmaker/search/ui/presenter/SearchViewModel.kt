@@ -7,10 +7,8 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.di.SETTINGS_STORAGE_CLIENT
 import com.practicum.playlistmaker.history.domain.TracksHistoryInteractor
 import com.practicum.playlistmaker.search.domain.SearchTracksInteractor
 import com.practicum.playlistmaker.search.domain.models.SearchResult
@@ -26,22 +24,12 @@ class SearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getFactory(context: Context,
-                       searchTracksInteractor: SearchTracksInteractor,
-                       tracksPreferenceInteractor: TracksHistoryInteractor): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(context, searchTracksInteractor, tracksPreferenceInteractor)
-            }
-        }
     }
-    //live data
-    private val searchStateLiveData = MutableLiveData<SearchState>()
-    fun observeSearchState(): LiveData<SearchState> = searchStateLiveData
 
-    private val historyStateLiveData = MutableLiveData<HistoryState>()
-    fun observeHistoryState(): LiveData<HistoryState> = historyStateLiveData
+    //live data
+    private val screenStateLiveData = MutableLiveData<SearchState>()
+    fun observeScreenState(): LiveData<SearchState> = screenStateLiveData
 
     //для поисковой строки
     private var latestSearchText: String? = null
@@ -69,7 +57,7 @@ class SearchViewModel(
     fun search(newSearchText: String){
         onCleared()
         if(newSearchText.isNotEmpty()){
-            renderSearchState(
+            renderScreenState(
                 SearchState.Loading
             )
 
@@ -83,17 +71,17 @@ class SearchViewModel(
                             is SearchResult.Success -> {
                                 tracks.clear()
                                 tracks.addAll(result.tracks)
-                                renderSearchState(
+                                renderScreenState(
                                     SearchState.Content(tracks)
                                 )
                             }
                             SearchResult.NoResults -> {
-                                renderSearchState(
+                                renderScreenState(
                                     SearchState.Empty(context.getString(R.string.empty_search))
                                 )
                             }
                             SearchResult.NetWorkError -> {
-                                renderSearchState(
+                                renderScreenState(
                                     SearchState.Error(context.getString(R.string.connect_error), context.getString(R.string.extra_connect_error))
                                 )
                             }
@@ -105,10 +93,6 @@ class SearchViewModel(
 
     }
 
-    private fun renderSearchState(state: SearchState) {
-        searchStateLiveData.postValue(state)
-    }
-
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
@@ -117,8 +101,8 @@ class SearchViewModel(
     //логика истории поиска
     fun clearHistory(){
         tracksPreferenceInteractor.clearSavedTracks()
-        renderHistoryState(
-            HistoryState.Cleared
+        renderScreenState(
+            SearchState.ClearedHistory
         )
     }
     fun showHistory() {
@@ -126,12 +110,12 @@ class SearchViewModel(
             object: TracksHistoryInteractor.TracksHistoryConsumer{
                 override fun consume(searchHistory: List<Track>) {
                     if(searchHistory.isNotEmpty()){
-                        renderHistoryState(
-                            HistoryState.Content(searchHistory)
+                        renderScreenState(
+                            SearchState.ContentHistory(searchHistory)
                         )
                     } else {
-                        renderHistoryState(
-                            HistoryState.Empty
+                        renderScreenState(
+                            SearchState.EmptyHistory
                         )
                     }
                 }
@@ -139,8 +123,8 @@ class SearchViewModel(
         )
     }
     fun hideHistory(){
-        renderHistoryState(
-            HistoryState.Empty
+        renderScreenState(
+            SearchState.EmptyHistory
         )
     }
 
@@ -148,7 +132,8 @@ class SearchViewModel(
         tracksPreferenceInteractor.saveTrack(track)
     }
 
-    private fun renderHistoryState(state: HistoryState) {
-        historyStateLiveData.postValue(state)
+    //изменение состояния экрана
+    private fun renderScreenState(state: SearchState) {
+        screenStateLiveData.postValue(state)
     }
 }

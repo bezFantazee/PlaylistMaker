@@ -1,33 +1,21 @@
 package com.practicum.playlistmaker.settings.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.settings.domain.ThemeInteractor
-import com.practicum.playlistmaker.main.ui.PREFERENCES
-import com.practicum.playlistmaker.main.ui.THEME_KEY
 import com.practicum.playlistmaker.settings.domain.model.ThemeState
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
-import com.practicum.playlistmaker.sharing.domain.SharingInteractor
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewModel: SettingsViewModel
-
-    private lateinit var sharingInteractor: SharingInteractor
-    private lateinit var settingsInteractor: ThemeInteractor
+    private val viewModel by viewModel<SettingsViewModel>()
 
     private lateinit var binding: ActivitySettingsBinding
 
@@ -42,24 +30,17 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val sharedPref = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
 
-
-        sharingInteractor = Creator.provideSharingInteractor(this.applicationContext)
-        settingsInteractor = Creator.provideThemeInteractor(sharedPref, THEME_KEY)
-
-        //Инициализация viewModel
-        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory(sharingInteractor, settingsInteractor))
-            .get(SettingsViewModel::class.java)
-
-        viewModel.observeThemeState().observe(this) {
-            AppCompatDelegate.setDefaultNightMode(
-                if(it == ThemeState.DARK_THEME){
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else{
-                    AppCompatDelegate.MODE_NIGHT_NO
-                }
-            )
+        //работа с viewModel
+        viewModel.observeThemeState().observe(this) { state ->
+            val mode = when(state) {
+                ThemeState.DARK_THEME -> AppCompatDelegate.MODE_NIGHT_YES
+                ThemeState.LIGHT_THEME -> AppCompatDelegate.MODE_NIGHT_NO
+            }
+            AppCompatDelegate.setDefaultNightMode(mode)
+            
+            // Обновляем состояние переключателя
+            binding.themeSwitcher.isChecked = state == ThemeState.DARK_THEME
         }
 
         //установка кнопики "назад"

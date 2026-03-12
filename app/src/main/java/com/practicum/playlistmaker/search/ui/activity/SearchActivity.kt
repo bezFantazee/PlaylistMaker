@@ -4,33 +4,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.history.domain.TracksHistoryInteractor
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.ui.HistoryState
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.presenter.SearchViewModel
 import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val TRACK_KEY = "track_key"
 
@@ -42,7 +36,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
     //viewModel
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
 
     //для поиска
     private var searchText: String = ""
@@ -92,16 +86,8 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
             insets
         }
         //viewModel и liveData
-        val sharedPref = getSharedPreferences(SEARCH_PREFERENCES, MODE_PRIVATE)
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory(this.applicationContext, Creator.provideTracksInteractor(), Creator.providePreferenceInteractor(sharedPref, TRACK_KEY)))
-            .get(SearchViewModel::class.java)
-
-        viewModel.observeSearchState().observe(this) {
-            renderSearch(it)
-        }
-
-        viewModel.observeHistoryState().observe(this) {
-            renderHistory(it)
+        viewModel.observeScreenState().observe(this) {
+            render(it)
         }
 
         //реализация ввода в поиск
@@ -199,15 +185,19 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         clearButton.visibility = clearButtonVisibility(searchText)
     }
 
-    //состояния экрана поиск
-    private fun renderSearch(searchState: SearchState) {
+    //состояния экрана
+    private fun render(searchState: SearchState) {
         when(searchState) {
             is SearchState.Loading -> showSearchLoading()
             is SearchState.Content -> showSearchContent(searchState.tracks)
             is SearchState.Error -> showSearchError(searchState.errorMessage, searchState.extraMessage)
             is SearchState.Empty -> showSearchEmpty(searchState.message)
+            is SearchState.EmptyHistory -> showHistoryEmpty()
+            is SearchState.ClearedHistory -> clearHistory()
+            is SearchState.ContentHistory -> showHistoryContent(searchState.tracks)
         }
     }
+    //состояния экрана поиск
     private fun showSearchLoading(){
         binding.searchPlaceholder.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
@@ -232,18 +222,11 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         showPlaceholder(text, "")
     }
     // состояния экрана история поиска
-    private fun renderHistory(historyState: HistoryState) {
-        when(historyState){
-            is HistoryState.Empty -> showHistoryEmpty()
-            is HistoryState.Content -> showHistoryContent(historyState.data)
-            is HistoryState.Cleared -> clearHistory()
-        }
-    }
-
     private fun showHistoryEmpty(){
         binding.searchHistory.visibility = View.GONE
     }
     private fun showHistoryContent(content: List<Track>){
+        binding.tracksList.visibility = View.GONE
         binding.searchHistory.visibility = View.VISIBLE
         historyTracks.clear()
         historyTracks.addAll(content)

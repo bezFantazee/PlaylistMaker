@@ -8,15 +8,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.MediaLibraryActivity
+import com.practicum.playlistmaker.mediaLibrary.ui.MediaLibraryActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
 import com.practicum.playlistmaker.settings.ui.activity.SettingsActivity
 import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 
 const val PREFERENCES = "theme_preferences"
-const val THEME_KEY = "theme_key"
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding
@@ -31,9 +29,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        //ницализация класса для зависимостей
-        Creator.initialize(this)
-
         //установка кнопки поиска(анинимный класс)
         val searchButtonClickListener: View.OnClickListener = object: View.OnClickListener{
             override fun onClick(v: View?){

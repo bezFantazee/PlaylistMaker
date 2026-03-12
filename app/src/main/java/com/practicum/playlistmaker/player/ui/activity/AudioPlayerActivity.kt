@@ -14,16 +14,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.player.ui.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.TRACK_KEY
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.time.OffsetDateTime
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class AudioPlayerActivity: AppCompatActivity() {
-    private lateinit var viewModel: PlayerViewModel
+    @Suppress("DEPRECATION")
+    private val track: Track? by lazy {
+        intent.getParcelableExtra<Track>(TRACK_KEY)
+    }
+    private val viewModel by viewModel<PlayerViewModel> {
+        parametersOf(track?.previewUrl)
+    }
     private lateinit var binding: ActivityAudioPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,22 +47,17 @@ class AudioPlayerActivity: AppCompatActivity() {
         }
         //получаем данные
         @Suppress("DEPRECATION")
-        val track = intent.getParcelableExtra<Track>(TRACK_KEY)
         if (track == null) {
             finish()
             return
         }
 
         //работа с viewModel
-        viewModel = ViewModelProvider(this, PlayerViewModel.getFabric(track.previewUrl))
-            .get(PlayerViewModel::class.java)
-
-        viewModel.observeTime().observe(this) {
-            binding.time.text = it
-        }
+//        viewModel.observeTime().observe(this) {
+//            binding.time.text = it
+//        }
         viewModel.observePlayerState().observe(this) {
-            changeButtonText(it == PlayerState.PLAYING)
-            enableButton(it != PlayerState.DEFAULT)
+            render(it)
         }
 
         //установка кнопики "назад"
@@ -68,9 +71,10 @@ class AudioPlayerActivity: AppCompatActivity() {
         }
 
         //установка данных
-        binding.trackName.text = track.trackName
-        binding.groupName.text = track.artistName
-        val trackTimeMillis = track.trackTimeMillis
+        val safeTrack = track ?: return
+        binding.trackName.text = safeTrack.trackName
+        binding.groupName.text = safeTrack.artistName
+        val trackTimeMillis = safeTrack.trackTimeMillis
         val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) % 60
         binding.trackTime.text= String.Companion.format(
@@ -79,13 +83,13 @@ class AudioPlayerActivity: AppCompatActivity() {
             minutes,
             seconds
         )
-        val album = track?.collectionName
+        val album = safeTrack.collectionName
         if (album.isNullOrEmpty()){
             val trackAlbumGroup: Group = findViewById(R.id.albumGroup)
             trackAlbumGroup.visibility = View.GONE
         }
         binding.album.text = album
-        val yearString = track?.releaseDate
+        val yearString = safeTrack.releaseDate
         if (yearString.isNullOrEmpty()){
             val trackYearGroup: Group = findViewById(R.id.yearGroup)
             trackYearGroup.visibility = View.GONE
@@ -94,10 +98,10 @@ class AudioPlayerActivity: AppCompatActivity() {
 
             binding.year.text = year.toString()
         }
-        binding.genre.text = track.primaryGenreName
-        binding.country.text = track.country
+        binding.genre.text = safeTrack.primaryGenreName
+        binding.country.text = safeTrack.country
 
-        var artworkUrl = track?.artworkUrl100
+        var artworkUrl: String? = safeTrack.artworkUrl100
         artworkUrl = getCoverArtwork(artworkUrl)
         Glide.with(this)
             .load(artworkUrl)
@@ -118,6 +122,27 @@ class AudioPlayerActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
+    }
+    //состояния экрана
+    private fun render(state: PlayerState){
+        when(state) {
+            PlayerState.Default -> {
+                enableButton(false)
+            }
+            PlayerState.Prepared -> {
+                enableButton(true)
+            }
+            is PlayerState.Playing -> {
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(true)
+            }
+            is PlayerState.Paused -> {
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(false)
+            }
+        }
     }
     //вспомогательные функции
     private fun enableButton(isEnabled: Boolean) {

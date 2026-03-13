@@ -7,6 +7,9 @@ import com.practicum.playlistmaker.mediaLibrary.presenter.FeaturesTracksViewMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FeaturesTracksFragment : BindingFragment<MediaLibraryFeaturedTracksBinding>() {
+    companion object{
+        fun newInstance() = FeaturesTracksFragment()
+    }
     private val viewModel: FeaturesTracksViewModel by viewModel()
 
     override fun createBinding(

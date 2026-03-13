@@ -7,6 +7,9 @@ import com.practicum.playlistmaker.mediaLibrary.presenter.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : BindingFragment<MediaLibraryPlaylistsBinding>() {
+    companion object{
+        fun newInstance() = PlaylistsFragment()
+    }
     private val viewModel: PlaylistsViewModel by viewModel()
 
     override fun createBinding(

@@ -13,8 +13,8 @@ class MediaLibraryViewPagerAdapter(
 ) : FragmentStateAdapter(fragmentManager, lifecycle){
     override fun createFragment(position: Int): Fragment {
         return when(position){
-            0 -> FeaturesTracksFragment()
-            else -> PlaylistsFragment()
+            0 -> FeaturesTracksFragment.newInstance()
+            else -> PlaylistsFragment.newInstance()
         }
     }
 

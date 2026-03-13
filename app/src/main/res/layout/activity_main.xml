@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text = "@string/play_list_make"
         android:textColor="@color/white"
-        android:textSize="@dimen/standart_text_size"
+        android:textSize="@dimen/big_standart_text_size"
         android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
         />

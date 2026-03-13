@@ -17,8 +17,8 @@
         android:text="@string/new_playlist"/>
 
     <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/big_icon_size"
+        android:layout_height="@dimen/big_icon_size"
         android:layout_marginTop="46dp"
         android:src="@drawable/ic_empty_media_library"
         android:backgroundTint="?attr/colorOnPrimary"/>
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
         android:text="@string/user_did_not_create_playlists"
-        android:textSize="19sp"
+        android:textSize="@dimen/standart_text_size"
         android:textColor="?attr/colorOnPrimary"
         android:fontFamily="@font/ys_display_medium"
         android:textFontWeight="400"

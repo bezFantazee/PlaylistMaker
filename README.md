@@ -8,9 +8,10 @@ Android-приложение для поиска и воспроизведени
 <h2>📸 Скриншоты</h2>
 
 <p>
-<img src="screenshots/search.png" width="250"/>
-<img src="screenshots/player.png" width="250"/>
-<img src="screenshots/settings.png" width="250"/>
+<img src="screenshots/search_screen.png" width="250"/>
+<img src="screenshots/track_screen.png" width="250"/>
+<img src="screenshots/media_library_screen.png" width="250"/>
+<img src="screenshots/settings_screen.png" width="250"/>
 </p>
 
 <h2>🚀 Основной функционал</h2>

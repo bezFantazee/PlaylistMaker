@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.mediaLibrary.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.databinding.MediaLibraryPlaylistsBinding
 import com.practicum.playlistmaker.mediaLibrary.presenter.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

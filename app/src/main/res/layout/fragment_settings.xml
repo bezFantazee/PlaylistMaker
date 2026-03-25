@@ -6,32 +6,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="?attr/colorPrimary"
-    android:id="@+id/settings">
+    android:id="@+id/settings"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".settings.ui.activity.SettingsFragment">
 
-    <LinearLayout
-        android:id="@+id/headContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <TextView
+        style ="@style/HeadText"
+        android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:foreground="?attr/selectableItemBackground"
-            android:id="@+id/back_button"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:theme = "@style/Base.Theme.PlaylistMaker"
-            app:tint="?attr/colorOnPrimary"
-            app:srcCompat="@drawable/ic_arrow"
-            android:layout_marginStart="@dimen/title_margin_start"/>
-
-        <TextView
-            style ="@style/HeadText"
-            android:layout_marginStart="24dp"
-            android:text="@string/settings"
-            />
-    </LinearLayout>
+        android:text="@string/settings" />
 
     <LinearLayout
         android:id="@+id/switchContainer"

@@ -6,7 +6,9 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    android:id="@+id/playlistsFragment">
+    android:id="@+id/playlistsFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".mediaLibrary.ui.PlaylistsFragment">
     
     <Button
         android:id="@+id/addNewPlaylistButton"

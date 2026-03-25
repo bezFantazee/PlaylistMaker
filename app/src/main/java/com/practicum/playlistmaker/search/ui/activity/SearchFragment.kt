@@ -1,34 +1,35 @@
 package com.practicum.playlistmaker.search.ui.activity
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+import com.practicum.playlistmaker.player.ui.activity.AudioPlayerFragment
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
-import com.practicum.playlistmaker.search.ui.HistoryState
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.presenter.SearchViewModel
 import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
-const val TRACK_KEY = "track_key"
-
-class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     companion object {
         const val SEARCH_PREFERENCES = "search_history_pref"
         private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
@@ -48,55 +49,50 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
 
     //список треков
     private val tracks = mutableListOf<Track>()
-    private val tracksAdapter =
-        TracksAdapter(tracks) { track ->
-            viewModel.saveHistory(track)
-            val intent = Intent(
-                this,
-                AudioPlayerActivity::class.java
-            )
-            intent.putExtra(TRACK_KEY, track)
-            startActivity(intent)
-        }
+    private val tracksAdapter = TracksAdapter(tracks) { track ->
+        findNavController().navigate(
+            R.id.action_searchFragment_to_audioPlayerFragment,
+            AudioPlayerFragment.createArgs(track)
+        )
+        viewModel.saveHistory(track)
+    }
     private var historyTracks = mutableListOf<Track>()
-    private val historyTracksAdapter =
-        TracksAdapter(historyTracks) { track ->
-            if (clickDebounce()) {
-                val intent = Intent(
-                    this,
-                    AudioPlayerActivity::class.java
-                )
-                intent.putExtra(TRACK_KEY, track)
-                startActivity(intent)
-            }
-        }
-    private lateinit var historyTracksRecycleView: RecyclerView
+    private val historyTracksAdapter = TracksAdapter(historyTracks) { track ->
+        findNavController().navigate(
+            R.id.action_searchFragment_to_audioPlayerFragment,
+            AudioPlayerFragment.createArgs(track)
+        )
+    }
 
-    //объявление элементов экрана
-    private lateinit var binding: ActivitySearchBinding
+    //инициализация binding
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(inflater, container, false)
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_search)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         //viewModel и liveData
-        viewModel.observeScreenState().observe(this) {
+        viewModel.observeScreenState().observe(viewLifecycleOwner) {
             render(it)
         }
+        //восстановление текста поиска
+        searchText = savedInstanceState?.getString(
+            SEARCH_TEXT_KEY,
+            AMOUNT_DEF
+        ) ?: ""
+        binding.searchInput.setText(searchText)
+
+        //восстановление видимости кнопки очистки
+        binding.clearButton.visibility = clearButtonVisibility(searchText)
 
         //реализация ввода в поиск
-        val clearButton = findViewById<ImageView>(R.id.clear_button)
-
-        clearButton.setOnClickListener { //логика работы кнопки очистки пользовательского ввода
+        binding.clearButton.setOnClickListener { //логика работы кнопки очистки пользовательского ввода
             binding.searchInput.setText("")
 
-            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.searchInput.windowToken, 0)
 
             binding.searchInput.clearFocus()
@@ -105,7 +101,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         }
 
         binding.searchInput.doOnTextChanged{ text, start, count, after -> //обработка пользовательского ввода
-            clearButton.visibility = clearButtonVisibility(text)
+            binding.clearButton.visibility = clearButtonVisibility(text)
             searchText = text?.toString() ?: ""
             viewModel.searchDebounce(
                 changedText = text?.toString() ?: ""
@@ -120,15 +116,8 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
             false
         }
 
-        //кнопки навигации
-        val backButton = findViewById<ImageView>( R.id.back_button) //кнопка возвращения назад
-
-        backButton.setOnClickListener {
-            finish()
-        }
-
         //список треков
-        binding.tracksList.layoutManager= LinearLayoutManager(this)
+        binding.tracksList.layoutManager= LinearLayoutManager(requireContext())
 
         binding.tracksList.adapter = tracksAdapter
 
@@ -141,22 +130,20 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         }
 
         //история поиска
-        historyTracksRecycleView = findViewById( R.id.history_tracks_list)
-        historyTracksRecycleView.layoutManager = LinearLayoutManager(this)
-        historyTracksRecycleView.adapter = historyTracksAdapter
+        binding.historyTracksList.layoutManager = LinearLayoutManager(requireContext())
+        binding.historyTracksList.adapter = historyTracksAdapter
 
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
         }
         binding.searchInput.setOnFocusChangeListener{ view, hasFocus ->
             if (hasFocus && binding.searchInput.text.isEmpty()){
-                runOnUiThread {
+                requireActivity().runOnUiThread {
                     viewModel.showHistory()
                 }
             } else {
                 viewModel.hideHistory()
             }
-
         }
 
         binding.searchInput.doOnTextChanged { s, start, before, count ->
@@ -174,17 +161,6 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         outState.putString(SEARCH_TEXT_KEY, searchText)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, AMOUNT_DEF)
-        val editText = findViewById<EditText>( R.id.search_input)
-        editText.setText(searchText)
-
-        //восстановление кнопки очистки
-        val clearButton = findViewById<ImageView>( R.id.clear_button)
-        clearButton.visibility = clearButtonVisibility(searchText)
-    }
-
     //состояния экрана
     private fun render(searchState: SearchState) {
         when(searchState) {
@@ -197,7 +173,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
             is SearchState.ContentHistory -> showHistoryContent(searchState.tracks)
         }
     }
-    //состояния экрана поиск
+    //состояния экрана Поиск
     private fun showSearchLoading(){
         binding.searchPlaceholder.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
@@ -221,7 +197,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         binding.progressBar.visibility = View.GONE
         showPlaceholder(text, "")
     }
-    // состояния экрана история поиска
+    // состояния экрана История поиска
     private fun showHistoryEmpty(){
         binding.searchHistory.visibility = View.GONE
     }
@@ -238,8 +214,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         binding.searchHistory.visibility = View.GONE
     }
     //логика появления кнопки очистки пользовательского ввода
-    private
-    fun clearButtonVisibility(s: CharSequence?): Int{
+    private fun clearButtonVisibility(s: CharSequence?): Int{
         return if(s.isNullOrEmpty()){
             View.GONE
         } else{
@@ -252,11 +227,14 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
         val current = isClickAllowed
         if (isClickAllowed){
             isClickAllowed = false
-            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({isClickAllowed = true},
+                CLICK_DEBOUNCE_DELAY
+            )
         }
         return current
     }
 
+    //показ сообщения об ошибке
     private fun showPlaceholder(text: String, extraText:String){
         if(text.isNotEmpty()){
             binding.searchPlaceholder.visibility = View.VISIBLE

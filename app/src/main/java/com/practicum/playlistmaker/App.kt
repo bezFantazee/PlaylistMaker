@@ -8,8 +8,6 @@ import com.practicum.playlistmaker.di.searchHistoryModel
 import com.practicum.playlistmaker.di.searchModule
 import com.practicum.playlistmaker.di.settingsModule
 import com.practicum.playlistmaker.di.sharingModule
-import com.practicum.playlistmaker.main.ui.PREFERENCES
-import com.practicum.playlistmaker.search.ui.activity.SearchActivity.Companion.SEARCH_PREFERENCES
 import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.settings.domain.model.ThemeState
 import org.koin.android.ext.android.inject

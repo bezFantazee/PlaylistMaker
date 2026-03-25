@@ -6,29 +6,14 @@
     android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
     android:background="?attr/colorPrimary"
-    android:id="@+id/media_library">
-    <LinearLayout
-        android:id="@+id/headContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    android:id="@+id/media_library"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".mediaLibrary.ui.MediaLibraryFragment">
+    <TextView
+        style="@style/HeadText"
+        android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_marginStart="@dimen/title_margin_start"
-            android:foreground="?attr/selectableItemBackground"
-            app:srcCompat="@drawable/ic_arrow"
-            app:tint="?attr/colorOnPrimary" />
-
-        <TextView
-            style="@style/HeadText"
-            android:layout_marginStart="24dp"
-            android:text="@string/media_library" />
-    </LinearLayout>
+        android:text="@string/media_library" />
     
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/mediaLibraryTabLayout"

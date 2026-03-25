@@ -43,4 +43,9 @@
 <!--    Для медиатеки-->
     <string name="features_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+
+<!--    Для bottom bar-->
+    <string name="search_screen">Поиск</string>
+    <string name="media_library_screen">Медиатека</string>
+    <string name="settings_screen">Настройки</string>
 </resources>

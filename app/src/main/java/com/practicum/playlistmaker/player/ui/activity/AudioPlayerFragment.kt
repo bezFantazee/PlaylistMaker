@@ -2,68 +2,66 @@ package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.practicum.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.practicum.playlistmaker.player.ui.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TRACK_KEY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.time.OffsetDateTime
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.getValue
 
-class AudioPlayerActivity: AppCompatActivity() {
-    @Suppress("DEPRECATION")
+class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
+    companion object{
+        const val ARGS_TRACK = "track"
+        fun createArgs(track: Track): Bundle =
+            Bundle().apply {
+                putParcelable(ARGS_TRACK, track)
+            }
+    }
+
     private val track: Track? by lazy {
-        intent.getParcelableExtra<Track>(TRACK_KEY)
+        arguments?.getParcelable(ARGS_TRACK)
     }
     private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(track?.previewUrl)
     }
-    private lateinit var binding: ActivityAudioPlayerBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentAudioPlayerBinding {
+        return FragmentAudioPlayerBinding.inflate(inflater, container, false)
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.audio_player)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         //получаем данные
         @Suppress("DEPRECATION")
         if (track == null) {
-            finish()
-            return
+            findNavController().navigateUp()
         }
 
         //работа с viewModel
-//        viewModel.observeTime().observe(this) {
-//            binding.time.text = it
-//        }
-        viewModel.observePlayerState().observe(this) {
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {
             render(it)
         }
 
         //установка кнопики "назад"
 
         binding.backButton.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
         //кнопка прогигрывания/паузы
         binding.playButton.setOnClickListener {
@@ -85,14 +83,12 @@ class AudioPlayerActivity: AppCompatActivity() {
         )
         val album = safeTrack.collectionName
         if (album.isNullOrEmpty()){
-            val trackAlbumGroup: Group = findViewById(R.id.albumGroup)
-            trackAlbumGroup.visibility = View.GONE
+            binding.albumGroup.visibility = View.GONE
         }
         binding.album.text = album
         val yearString = safeTrack.releaseDate
         if (yearString.isNullOrEmpty()){
-            val trackYearGroup: Group = findViewById(R.id.yearGroup)
-            trackYearGroup.visibility = View.GONE
+            binding.yearGroup.visibility = View.GONE
         } else{
             val year = OffsetDateTime.parse(yearString).year
 

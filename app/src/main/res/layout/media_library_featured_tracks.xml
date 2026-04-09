@@ -5,7 +5,9 @@
     android:gravity="center_horizontal"
     android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
-    android:id="@+id/featuresTracksFragment">
+    android:id="@+id/featuresTracksFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".mediaLibrary.ui.FeaturesTracksFragment">
     
     <ImageView
         android:layout_width="120dp"

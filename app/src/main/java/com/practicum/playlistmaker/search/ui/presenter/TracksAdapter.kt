@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TRACK_KEY
 
 class TracksAdapter(
     private val tracks: List<Track>,
@@ -15,7 +14,7 @@ class TracksAdapter(
         parent: ViewGroup,
         viewType: Int
     ): TracksViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.activity_track, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_card, parent, false)
         return TracksViewHolder(view)
     }
 

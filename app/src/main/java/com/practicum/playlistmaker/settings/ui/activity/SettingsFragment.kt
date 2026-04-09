@@ -1,52 +1,44 @@
 package com.practicum.playlistmaker.settings.ui.activity
 
 import android.os.Bundle
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.domain.model.ThemeState
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : BindingFragment<FragmentSettingsBinding>() {
     private val viewModel by viewModel<SettingsViewModel>()
 
-    private lateinit var binding: ActivitySettingsBinding
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSettingsBinding {
+        return FragmentSettingsBinding.inflate(inflater, container, false)
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         //работа с viewModel
-        viewModel.observeThemeState().observe(this) { state ->
+        viewModel.observeThemeState().observe(viewLifecycleOwner) { state ->
             val mode = when(state) {
                 ThemeState.DARK_THEME -> AppCompatDelegate.MODE_NIGHT_YES
                 ThemeState.LIGHT_THEME -> AppCompatDelegate.MODE_NIGHT_NO
             }
             AppCompatDelegate.setDefaultNightMode(mode)
-            
+
             // Обновляем состояние переключателя
             binding.themeSwitcher.isChecked = state == ThemeState.DARK_THEME
         }
 
-        //установка кнопики "назад"
-        binding.backButton.setOnClickListener {
-            finish()
-        }
         //кнопка темная тема
         binding.themeSwitcher.setOnClickListener {
             viewModel.switchTheme()
@@ -61,9 +53,7 @@ class SettingsActivity : AppCompatActivity() {
             viewModel.onOpenSupportButtonClicked()
         }
 
-        val openUserAgreementButton = findViewById<LinearLayout>(R.id.user_agreement_button)
-
-        openUserAgreementButton.setOnClickListener {
+        binding.userAgreementButton.setOnClickListener {
             viewModel.onOpenTermsButtonClicked()
         }
     }

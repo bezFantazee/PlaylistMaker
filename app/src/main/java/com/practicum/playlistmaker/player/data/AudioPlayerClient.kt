@@ -5,5 +5,6 @@ interface AudioPlayerClient {
     fun pause()
     fun prepare(url: String)
     fun getTime(): Int
+    fun isPlaying(): Boolean
     fun resetMediaPlayer()
 }

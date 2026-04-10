@@ -43,7 +43,7 @@ val searchModule = module {
 
     //interactor
     single<SearchTracksInteractor> {
-        SearchTracksInteractorImpl(get(), get())
+        SearchTracksInteractorImpl(get())
     }
 
     //viewModel

@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -122,18 +123,31 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     //состояния экрана
     private fun render(state: PlayerState){
         when(state) {
-            PlayerState.Default -> {
+            is PlayerState.Default -> {
+                Log.d("12dr", "default")
+                binding.time.text = state.currentTime
                 enableButton(false)
             }
-            PlayerState.Prepared -> {
+            is PlayerState.Prepared -> {
+                Log.d("12dr", "prepared")
+                binding.time.text = state.currentTime
                 enableButton(true)
+                changeButtonText(false)
             }
             is PlayerState.Playing -> {
+                Log.d("12dr", "playing")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(true)
             }
             is PlayerState.Paused -> {
+                Log.d("12dr", "paused")
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(false)
+            }
+            is PlayerState.Completed -> {
+                Log.d("12dr", "completed")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(false)

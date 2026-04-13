@@ -1,9 +1,5 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import androidx.core.R
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -94,6 +90,7 @@ class PlayerViewModel(
 
     //устанока времени таймера воспроизведения
     private fun startTimerUpdate() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while(playerInteractor.isPlaying()) {
                 delay(UPDATE_TIMETRACK_TIME)

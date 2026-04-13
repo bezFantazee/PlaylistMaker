@@ -1,12 +1,10 @@
 package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.Group
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -124,30 +122,25 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     private fun render(state: PlayerState){
         when(state) {
             is PlayerState.Default -> {
-                Log.d("12dr", "default")
                 binding.time.text = state.currentTime
                 enableButton(false)
             }
             is PlayerState.Prepared -> {
-                Log.d("12dr", "prepared")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(false)
             }
             is PlayerState.Playing -> {
-                Log.d("12dr", "playing")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(true)
             }
             is PlayerState.Paused -> {
-                Log.d("12dr", "paused")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(false)
             }
             is PlayerState.Completed -> {
-                Log.d("12dr", "completed")
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(false)

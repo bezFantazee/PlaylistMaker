@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.Group
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -122,11 +121,14 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     //состояния экрана
     private fun render(state: PlayerState){
         when(state) {
-            PlayerState.Default -> {
+            is PlayerState.Default -> {
+                binding.time.text = state.currentTime
                 enableButton(false)
             }
-            PlayerState.Prepared -> {
+            is PlayerState.Prepared -> {
+                binding.time.text = state.currentTime
                 enableButton(true)
+                changeButtonText(false)
             }
             is PlayerState.Playing -> {
                 binding.time.text = state.currentTime
@@ -134,6 +136,11 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
                 changeButtonText(true)
             }
             is PlayerState.Paused -> {
+                binding.time.text = state.currentTime
+                enableButton(true)
+                changeButtonText(false)
+            }
+            is PlayerState.Completed -> {
                 binding.time.text = state.currentTime
                 enableButton(true)
                 changeButtonText(false)

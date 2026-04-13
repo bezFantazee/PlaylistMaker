@@ -20,6 +20,10 @@ class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInt
         return repository.getCurrentTime()
     }
 
+    override fun isPlaying(): Boolean {
+        return repository.isPlaying()
+    }
+
     override fun onCleared() {
         repository.resetMediaPlayer()
     }

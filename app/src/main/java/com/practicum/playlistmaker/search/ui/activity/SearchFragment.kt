@@ -15,6 +15,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.presenter.SearchViewModel
 import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -43,25 +45,18 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private var searchText: String = ""
 
     //задержка клика
-    private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
+    private lateinit var onHistoryTrackClickDebounce: (Track) -> Unit
 
 
     //список треков
     private val tracks = mutableListOf<Track>()
     private val tracksAdapter = TracksAdapter(tracks) { track ->
-        findNavController().navigate(
-            R.id.action_searchFragment_to_audioPlayerFragment,
-            AudioPlayerFragment.createArgs(track)
-        )
-        viewModel.saveHistory(track)
+        onTrackClickDebounce(track)
     }
     private var historyTracks = mutableListOf<Track>()
     private val historyTracksAdapter = TracksAdapter(historyTracks) { track ->
-        findNavController().navigate(
-            R.id.action_searchFragment_to_audioPlayerFragment,
-            AudioPlayerFragment.createArgs(track)
-        )
+        onHistoryTrackClickDebounce(track)
     }
 
     //инициализация binding
@@ -78,6 +73,18 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.observeScreenState().observe(viewLifecycleOwner) {
             render(it)
         }
+        //инициализация debounce клика по треку
+        onTrackClickDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+            findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track = track))
+            viewModel.saveHistory(track)
+        }
+
+        onHistoryTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+            findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track=track))
+        }
+
         //восстановление текста поиска
         searchText = savedInstanceState?.getString(
             SEARCH_TEXT_KEY,
@@ -220,18 +227,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         } else{
             View.VISIBLE
         }
-    }
-
-    //debounce для обработки нажатия на элемент списка результатов поиска
-    private fun clickDebounce(): Boolean{
-        val current = isClickAllowed
-        if (isClickAllowed){
-            isClickAllowed = false
-            handler.postDelayed({isClickAllowed = true},
-                CLICK_DEBOUNCE_DELAY
-            )
-        }
-        return current
     }
 
     //показ сообщения об ошибке

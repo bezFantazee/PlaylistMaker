@@ -21,6 +21,10 @@ class PlayerRepositoryImpl(
         return audioPlayerClient.getTime()
     }
 
+    override fun isPlaying(): Boolean {
+        return audioPlayerClient.isPlaying()
+    }
+
     override fun resetMediaPlayer() {
         audioPlayerClient.resetMediaPlayer()
     }

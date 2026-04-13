@@ -5,31 +5,35 @@ import com.practicum.playlistmaker.search.data.dto.TracksResponse
 import com.practicum.playlistmaker.search.domain.models.SearchResult
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.SearchTracksRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchTracksRepositoryImpl(private val networkClient: NetworkClient):
     SearchTracksRepository {
-    override fun searchTracks(expression: String): SearchResult {
+    override fun searchTracks(expression: String): Flow<SearchResult> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
-        return when {
+        when {
             response.resultCode == 200 -> {
-                val tracks = (response as TracksResponse).results.map {
-                    Track(
-                        it.trackId,
-                        it.trackName,
-                        it.artistName,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl
-                    )
+                with(response as TracksResponse){
+                    val data = results.map {
+                        Track(
+                            it.trackId,
+                            it.trackName,
+                            it.artistName,
+                            it.trackTimeMillis,
+                            it.artworkUrl100,
+                            it.collectionName,
+                            it.releaseDate,
+                            it.primaryGenreName,
+                            it.country,
+                            it.previewUrl
+                        )
+                    }
+                    if (data.isNotEmpty()) emit(SearchResult.Success(data))
+                    else emit(SearchResult.NoResults)
                 }
-                if (tracks.isNotEmpty()) SearchResult.Success(tracks)
-                else SearchResult.NoResults
             }
-            else -> SearchResult.NetWorkError
+            else -> emit(SearchResult.NetWorkError)
         }
     }
 }

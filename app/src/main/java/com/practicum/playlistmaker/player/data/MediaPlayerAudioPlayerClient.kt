@@ -31,6 +31,10 @@ class MediaPlayerAudioPlayerClient(
         return mediaPlayer.currentPosition
     }
 
+    override fun isPlaying(): Boolean {
+        return mediaPlayer.isPlaying
+    }
+
     override fun resetMediaPlayer() {
         mediaPlayer.reset()
     }

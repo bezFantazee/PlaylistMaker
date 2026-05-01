@@ -3,6 +3,7 @@ package com.practicum.playlistmaker
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.di.mediaLibraryModule
 import com.practicum.playlistmaker.di.playerModule
 import com.practicum.playlistmaker.di.searchHistoryModel
 import com.practicum.playlistmaker.di.searchModule
@@ -26,6 +27,7 @@ class App : Application() {
             androidContext(this@App)
             modules(
                 searchModule,
+                mediaLibraryModule,
                 playerModule,
                 settingsModule,
                 sharingModule,

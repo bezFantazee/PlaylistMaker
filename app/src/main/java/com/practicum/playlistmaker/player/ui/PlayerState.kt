@@ -1,9 +1,29 @@
 package com.practicum.playlistmaker.player.ui
 
-sealed class PlayerState(val isPlayButtonEnabled: Boolean, val currentTime: String) {
-    class Default : PlayerState(false, "00:00")
-    object Prepared : PlayerState(true, "00:00")
-    class Playing(currentTime: String) : PlayerState(true, currentTime)
-    class Paused(currentTime: String) : PlayerState(true, currentTime)
-    object Completed : PlayerState(true, "00:00")
+sealed class PlayerState(
+    val isPlayButtonEnabled: Boolean,
+    val isPlaying: Boolean,
+    open val currentTime: String,
+    open val isFavourite: Boolean,
+) {
+    data class Default(
+        override val currentTime: String = "00:00",
+        override val isFavourite: Boolean = false
+    ) : PlayerState(false, false, currentTime, isFavourite)
+    data class Prepared(
+        override val currentTime: String = "00:00",
+        override val isFavourite: Boolean = false
+    ) : PlayerState(true, false, currentTime, isFavourite)
+    data class Playing(
+        override val currentTime: String,
+        override val isFavourite: Boolean
+        ) : PlayerState(true, true, currentTime, isFavourite)
+    data class Paused(
+        override val currentTime: String,
+        override val isFavourite: Boolean
+    ) : PlayerState(true, false, currentTime, isFavourite)
+    data class Completed(
+        override val currentTime: String = "00:00",
+        override val isFavourite: Boolean
+    ) : PlayerState(true, false,currentTime, isFavourite)
 }

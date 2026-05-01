@@ -110,9 +110,9 @@ class SearchViewModel(
         )
     }
     fun showHistory() {
-        tracksPreferenceInteractor.getTracks(
-            object : TracksHistoryInteractor.TracksHistoryConsumer {
-                override fun consume(searchHistory: List<Track>) {
+        viewModelScope.launch {
+            tracksPreferenceInteractor.getTracks()
+                .collect{ searchHistory ->
                     if (searchHistory.isNotEmpty()) {
                         renderScreenState(
                             SearchState.ContentHistory(searchHistory)
@@ -123,8 +123,8 @@ class SearchViewModel(
                         )
                     }
                 }
-            }
-        )
+        }
+
     }
     fun hideHistory(){
         renderScreenState(

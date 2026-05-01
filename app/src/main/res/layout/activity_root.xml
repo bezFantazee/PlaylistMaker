@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:theme="@style/Base.Theme.PlaylistMaker">
+    android:theme="@style/Base.Theme.PlaylistMaker"
+    android:paddingBottom="0dp">
     <androidx.fragment.app.FragmentContainerView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -22,7 +23,8 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        android:padding="0dp"
         android:id="@+id/bottomNavigationView"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
@@ -31,10 +33,24 @@
         android:outlineSpotShadowColor="?attr/colorOnPrimary"
         app:elevation="8dp"
 
+        app:itemTextAppearanceActive="@style/BottomNavText"
+        app:itemTextAppearanceInactive="@style/BottomNavText"
+
+        android:layout_margin="0dp"
+        app:paddingBottomSystemWindowInsets="false"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+
+        app:labelVisibilityMode="labeled"
+        app:itemHorizontalTranslationEnabled="false"
+
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-        app:menu="@menu/bottom_navigation_menu"/>
+        app:menu="@menu/bottom_navigation_menu"
+
+        style="@style/CustomBottomNav"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

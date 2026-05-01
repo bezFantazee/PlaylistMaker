@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:theme="@style/Base.Theme.PlaylistMaker"
     android:orientation="vertical"
@@ -10,12 +11,14 @@
     tools:context=".mediaLibrary.ui.FeaturesTracksFragment">
     
     <ImageView
+        android:id="@+id/placeholderImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="106dp"
         android:src="@drawable/ic_empty_media_library"
         android:backgroundTint="?attr/colorOnPrimary"/>
     <TextView
+        android:id="@+id/placeholderMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
@@ -24,5 +27,11 @@
         android:textColor="?attr/colorOnPrimary"
         android:fontFamily="@font/ys_display_medium"
         android:textFontWeight="400"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/featuredTracks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </LinearLayout>

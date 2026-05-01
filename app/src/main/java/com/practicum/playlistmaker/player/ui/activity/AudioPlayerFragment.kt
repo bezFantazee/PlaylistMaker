@@ -34,7 +34,7 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
         arguments?.getParcelable(ARGS_TRACK)
     }
     private val viewModel by viewModel<PlayerViewModel> {
-        parametersOf(track?.previewUrl)
+        parametersOf(track)
     }
 
     override fun createBinding(
@@ -112,7 +112,13 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
                 )
             )
             .into(binding.trackCover)
+
+        //установка листенера на кнопку likeButton
+        binding.likeButton.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -120,29 +126,30 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     }
     //состояния экрана
     private fun render(state: PlayerState){
+        setFavouriteIcon(state.isFavourite) //установка состояния трека(избранный/не избранный)
         when(state) {
             is PlayerState.Default -> {
                 binding.time.text = state.currentTime
-                enableButton(false)
+                enableButton(state.isPlayButtonEnabled)
             }
             is PlayerState.Prepared -> {
                 binding.time.text = state.currentTime
-                enableButton(true)
+                enableButton(state.isPlayButtonEnabled)
                 changeButtonText(false)
             }
             is PlayerState.Playing -> {
                 binding.time.text = state.currentTime
-                enableButton(true)
+                enableButton(state.isPlayButtonEnabled)
                 changeButtonText(true)
             }
             is PlayerState.Paused -> {
                 binding.time.text = state.currentTime
-                enableButton(true)
+                enableButton(state.isPlayButtonEnabled)
                 changeButtonText(false)
             }
             is PlayerState.Completed -> {
                 binding.time.text = state.currentTime
-                enableButton(true)
+                enableButton(state.isPlayButtonEnabled)
                 changeButtonText(false)
             }
         }
@@ -156,4 +163,8 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
         else binding.playButton.setImageResource(R.drawable.ic_play)
     }
     private fun getCoverArtwork(url: String?) = url?.replaceAfterLast('/', "512x512bb.jpg")
+
+    private fun setFavouriteIcon(isFavourite: Boolean){
+        binding.likeButton.setImageResource(if (isFavourite) R.drawable.ic_like_active else (R.drawable.ic_like))
+    }
 }

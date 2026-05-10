@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.history.domain
 
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
 
 class TracksHistoryInteractorImpl(
     private val repository: TracksHistoryRepository
@@ -9,8 +10,8 @@ class TracksHistoryInteractorImpl(
         repository.clearSavedTracks()
     }
 
-    override fun getTracks(consumer: TracksHistoryInteractor.TracksHistoryConsumer) {
-        consumer.consume(repository.getTracks())
+    override suspend fun getTracks(): Flow<List<Track>> {
+        return repository.getTracks()
     }
 
     override fun saveTrack(track: Track) {

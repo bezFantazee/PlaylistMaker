@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,18 @@ class RootActivity : AppCompatActivity() {
             insets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigationView) { view, insets ->
+            val verticalPadding = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                BOTTOM_NAV_VERTICAL_PADDING_DP,
+                resources.displayMetrics
+            ).toInt()
+
+            view.setPadding(0, verticalPadding, 0, verticalPadding)
+            insets
+        }
+        ViewCompat.requestApplyInsets(binding.root)
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
@@ -40,5 +53,9 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val BOTTOM_NAV_VERTICAL_PADDING_DP = 8f
     }
 }

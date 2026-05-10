@@ -108,6 +108,7 @@
             android:textFontWeight="500"/>
 
         <ImageButton
+            android:id="@+id/saveButton"
             android:layout_width="51dp"
             android:layout_height="51dp"
             android:src="@drawable/ic_add"
@@ -119,6 +120,7 @@
             app:layout_constraintStart_toStartOf="@id/trackCover"/>
 
         <ImageButton
+            android:id="@+id/likeButton"
             android:layout_width="51dp"
             android:layout_height="51dp"
             android:src="@drawable/ic_like"

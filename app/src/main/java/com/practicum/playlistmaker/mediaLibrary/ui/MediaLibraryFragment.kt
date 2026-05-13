@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaLibraryBinding
-import com.practicum.playlistmaker.mediaLibrary.presenter.MediaLibraryViewPagerAdapter
+import com.practicum.playlistmaker.mediaLibrary.ui.presenter.MediaLibraryViewPagerAdapter
 
 class MediaLibraryFragment : BindingFragment<FragmentMediaLibraryBinding>() {
     private lateinit var tabMediator: TabLayoutMediator

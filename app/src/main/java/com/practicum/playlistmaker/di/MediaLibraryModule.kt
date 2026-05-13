@@ -1,14 +1,19 @@
 package com.practicum.playlistmaker.di
 
 import androidx.room.Room
-import com.practicum.playlistmaker.mediaLibrary.data.FeaturedTracksRepositoryImpl
+import com.practicum.playlistmaker.mediaLibrary.data.db.PlaylistDbConvector
+import com.practicum.playlistmaker.mediaLibrary.data.featuredTracks.FeaturedTracksRepositoryImpl
 import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDatabase
 import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDbConvertor
-import com.practicum.playlistmaker.mediaLibrary.domain.FeaturedTracksInteractor
-import com.practicum.playlistmaker.mediaLibrary.domain.FeaturedTracksInteractorImpl
-import com.practicum.playlistmaker.mediaLibrary.domain.FeaturedTracksRepository
-import com.practicum.playlistmaker.mediaLibrary.presenter.FeaturesTracksViewModel
-import com.practicum.playlistmaker.mediaLibrary.presenter.PlaylistsViewModel
+import com.practicum.playlistmaker.mediaLibrary.data.playlists.PlaylistsDbRepositoryImpl
+import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractorImpl
+import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksRepository
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractorImpl
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbRepository
+import com.practicum.playlistmaker.mediaLibrary.ui.presenter.feturedTracks.FeaturesTracksViewModel
+import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -21,16 +26,28 @@ val mediaLibraryModule = module{
             .build()
     }
 
+    single { get<TrackDatabase>().featuredTrackDao() }
+    single { get<TrackDatabase>().savedTrackDao()}
+
+    single {get<TrackDatabase>().playlistDao()}
+
     //repository
     factory { TrackDbConvertor() }
+    factory { PlaylistDbConvector(get()) }
 
     single<FeaturedTracksRepository> {
         FeaturedTracksRepositoryImpl(get(), get())
+    }
+    single<PlaylistsDbRepository> {
+        PlaylistsDbRepositoryImpl(get(), get(), get(), get())
     }
 
     //interactors
     single<FeaturedTracksInteractor> {
         FeaturedTracksInteractorImpl(get())
+    }
+    single<PlaylistsDbInteractor>{
+        PlaylistsDbInteractorImpl(get())
     }
 
     //viewModel
@@ -39,6 +56,6 @@ val mediaLibraryModule = module{
     }
 
     viewModel{
-        PlaylistsViewModel()
+        PlaylistsViewModel(get())
     }
 }

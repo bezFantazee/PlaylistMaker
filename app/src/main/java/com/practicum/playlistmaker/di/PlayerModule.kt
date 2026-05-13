@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.PlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.PlayerRepository
 import com.practicum.playlistmaker.player.domain.TrackCompletionListenerHolder
-import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.practicum.playlistmaker.player.ui.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -37,6 +37,6 @@ val playerModule = module {
 
     //viewModel
     viewModel{ (track:Track) ->
-        PlayerViewModel(track, get(), get(), get())
+        PlayerViewModel(track, get(), get(), get(),get())
     }
 }

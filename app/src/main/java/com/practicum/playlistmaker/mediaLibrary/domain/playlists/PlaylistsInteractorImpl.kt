@@ -4,9 +4,9 @@ import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-class PlaylistsDbInteractorImpl(
+class PlaylistsInteractorImpl(
     private val repository: PlaylistsDbRepository
-) : PlaylistsDbInteractor{
+) : PlaylistsInteractor{
     override suspend fun savePlaylist(playlist: Playlist) {
         repository.savePlaylist(playlist)
     }

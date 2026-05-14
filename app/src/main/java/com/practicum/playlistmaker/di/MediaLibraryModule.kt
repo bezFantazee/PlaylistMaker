@@ -9,8 +9,8 @@ import com.practicum.playlistmaker.mediaLibrary.data.playlists.PlaylistsDbReposi
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractor
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractorImpl
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksRepository
-import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractor
-import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractorImpl
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsInteractorImpl
 import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbRepository
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.feturedTracks.FeaturesTracksViewModel
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsViewModel
@@ -46,8 +46,8 @@ val mediaLibraryModule = module{
     single<FeaturedTracksInteractor> {
         FeaturedTracksInteractorImpl(get())
     }
-    single<PlaylistsDbInteractor>{
-        PlaylistsDbInteractorImpl(get())
+    single<PlaylistsInteractor>{
+        PlaylistsInteractorImpl(get())
     }
 
     //viewModel

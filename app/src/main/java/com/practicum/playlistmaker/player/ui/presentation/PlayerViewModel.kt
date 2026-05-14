@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.SingleLiveEvent
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractor
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
-import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsInteractor
 import com.practicum.playlistmaker.player.domain.OnTrackCompletionListener
 import com.practicum.playlistmaker.player.domain.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.TrackCompletionListenerHolder
@@ -27,7 +27,7 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private var listenerHolder: TrackCompletionListenerHolder,
     private val featuredTracksInteractor: FeaturedTracksInteractor,
-    private val playlistsDbInteractor: PlaylistsDbInteractor
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
     //LiveData
     private val playerStateLiveData = MutableLiveData(
@@ -80,7 +80,7 @@ class PlayerViewModel(
     }
 
     private suspend fun loadPlaylists() {
-        playlistsDbInteractor.getPlaylists()
+        playlistsInteractor.getPlaylists()
             .collect { result ->
                 updateUiState { it.copy(
                     playlists = result
@@ -90,9 +90,9 @@ class PlayerViewModel(
 
     fun saveToPlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            val playlistTracks = playlistsDbInteractor.getPlaylistTracksId(playlist.playlistId)
+            val playlistTracks = playlistsInteractor.getPlaylistTracksId(playlist.playlistId)
             if(track.trackId !in playlistTracks) {
-                playlistsDbInteractor.saveTrack(playlist, track)
+                playlistsInteractor.saveTrack(playlist, track)
                 hideBottomSheet()
                 showToast.postValue(
                     PlayerEvent.ShowToast(

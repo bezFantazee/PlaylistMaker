@@ -2,23 +2,26 @@ package com.practicum.playlistmaker.playlist.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistBinding
 import com.practicum.playlistmaker.playlist.ui.view_model.CreatePlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import kotlin.getValue
 
 class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
@@ -31,7 +34,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
 
     var playlistName: String? = null
     var playlistDescription: String? = null
-    var imageUri: Uri? = null
+    var imagePath: String? = null
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -44,10 +47,10 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         super.onViewCreated(view, savedInstanceState)
         //viewModel
         viewModel.observeImagePath().observe(viewLifecycleOwner) {path ->
-            val uri = path?.toUri()
-            binding.playlistImage.scaleType = ImageView.ScaleType.CENTER_CROP
-            binding.playlistImage.setImageURI(uri)
-            imageUri = uri
+            if(path != null) {
+                setImage(path)
+                imagePath = path
+            }
         }
 
         //восстановление введенных данных
@@ -72,15 +75,15 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
             }
 
         binding.backButton.setOnClickListener {
-            if(imageUri != null || playlistName != null || playlistDescription != null) {
+            if(imagePath != null || playlistName != null || playlistDescription != null) {
                 confirmDialog.show()
             } else {
                 findNavController().navigateUp()
             }
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback() {
-            if(imageUri != null || playlistName != null || playlistDescription != null) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if(imagePath != null || playlistName != null || playlistDescription != null) {
                 confirmDialog.show()
             }
         }
@@ -88,7 +91,6 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 viewModel.setImage(uri)
-                imageUri = uri
             }
         }
 
@@ -111,7 +113,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
 
         binding.saveButton.setOnClickListener {
             if (playlistName != null) {
-                viewModel.savePlaylist(playlistName!!, playlistDescription, imageUri)
+                viewModel.savePlaylist(playlistName!!, playlistDescription, imagePath)
                 makeToastMessage( getString(R.string.create_playlist_toast, playlistName))
                 findNavController().navigateUp()
             }
@@ -127,5 +129,19 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
 
     private fun makeToastMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun setImage(path: String){
+        Glide.with(requireContext())
+            .load(File(path))
+            .transform(CenterCrop(),
+                RoundedCorners(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8f,
+                   requireContext().resources.displayMetrics
+                ).toInt())
+            )
+            .into(binding.playlistImage)
     }
 }

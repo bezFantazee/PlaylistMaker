@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-interface PlaylistsDbInteractor {
+interface PlaylistsInteractor {
     suspend fun savePlaylist(playlist: Playlist)
     fun getPlaylists(): Flow<List<Playlist>>
     suspend fun getPlaylistTracksId(playlistId: Int): List<Int>

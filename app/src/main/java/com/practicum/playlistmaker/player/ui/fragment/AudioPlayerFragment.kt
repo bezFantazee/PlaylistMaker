@@ -234,8 +234,16 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     //BottomSheet
     private fun showBottomSheet(isBottomSheetExpanded: Boolean) {
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetContainer)
+        val peekHeight = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            505f,
+            resources.displayMetrics
+        ).toInt()
+
+        bottomSheetBehavior.peekHeight = peekHeight
+
         if (isBottomSheetExpanded) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         } else {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }

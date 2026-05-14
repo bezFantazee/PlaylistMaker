@@ -6,21 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
-import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsInteractor
 import com.practicum.playlistmaker.playlist.domain.FileStorageInteractor
 import kotlinx.coroutines.launch
 
 class CreatePlaylistViewModel(
     private val fileStorageInteractor: FileStorageInteractor,
-    private val playlistsDbInteractor: PlaylistsDbInteractor
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private val imagePath = MutableLiveData<String?>()
     fun observeImagePath(): LiveData<String?> = imagePath
 
-    fun savePlaylist(playlistName: String, playlistDescription: String?, imageUri: Uri?){
+    fun savePlaylist(playlistName: String, playlistDescription: String?, imagePath: String?){
         viewModelScope.launch {
-           val imagePath = saveImageToStorage(imageUri)
             val playlist = Playlist(
                 playlistId = 0,
                 playlistName = playlistName,
@@ -29,7 +28,7 @@ class CreatePlaylistViewModel(
                 tracks = null,
                 tracksCount = 0
             )
-            playlistsDbInteractor.savePlaylist(playlist)
+            playlistsInteractor.savePlaylist(playlist)
         }
     }
 

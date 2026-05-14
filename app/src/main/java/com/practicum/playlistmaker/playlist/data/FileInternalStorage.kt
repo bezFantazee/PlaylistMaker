@@ -22,13 +22,18 @@ class FileInternalStorage(
         val fileName = "${UUID.randomUUID()}.jpg"
         val file = File(filePath, fileName)
 
-        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+        val inputStream = if (uri.scheme == "content") {
+            context.contentResolver.openInputStream(uri)
+        } else {
+            java.io.FileInputStream(File(uri.path ?: ""))
+        }
+
+        inputStream?.use { input ->
             FileOutputStream(file).use { outputStream ->
-                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val bitmap = BitmapFactory.decodeStream(input)
                 bitmap?.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
             }
         }
-
         return file.absolutePath
     }
 

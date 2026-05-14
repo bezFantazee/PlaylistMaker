@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsDbInteractor
+import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsInteractor
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
-    val playlistsDbInteractor: PlaylistsDbInteractor
+    val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
     private val playlistsUiStateLiveData = MutableLiveData<PlaylistsUiState>(
         PlaylistsUiState.Empty
@@ -22,7 +22,7 @@ class PlaylistsViewModel(
 
     private fun loadPlaylists() {
         viewModelScope.launch {
-            playlistsDbInteractor.getPlaylists()
+            playlistsInteractor.getPlaylists()
                 .collect { result ->
                     if(result.isNotEmpty()) {
                         playlistsUiStateLiveData.value = PlaylistsUiState.Content(result)

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.di.mediaLibraryModule
 import com.practicum.playlistmaker.di.playerModule
+import com.practicum.playlistmaker.di.playlistModule
 import com.practicum.playlistmaker.di.searchHistoryModel
 import com.practicum.playlistmaker.di.searchModule
 import com.practicum.playlistmaker.di.settingsModule
@@ -31,7 +32,8 @@ class App : Application() {
                 playerModule,
                 settingsModule,
                 sharingModule,
-                searchHistoryModel
+                searchHistoryModel,
+                playlistModule
             )
         }
         val savedTheme = themeInteractor.getCurrentTheme()

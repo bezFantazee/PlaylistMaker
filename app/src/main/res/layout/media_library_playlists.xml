@@ -19,12 +19,14 @@
         android:text="@string/new_playlist"/>
 
     <ImageView
+        android:id="@+id/placeholderImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="46dp"
         android:src="@drawable/ic_empty_media_library"
         android:backgroundTint="?attr/colorOnPrimary"/>
     <TextView
+        android:id="@+id/placeholderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
@@ -35,6 +37,11 @@
         android:textFontWeight="400"
         android:textAlignment="center"/>
 
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlists"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="8dp"
+        android:layout_marginVertical="12dp"/>
 
 </LinearLayout>

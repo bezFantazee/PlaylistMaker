@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:theme="@style/Base.Theme.PlaylistMaker"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".search.ui.activity.SearchFragment">
+    tools:context=".search.ui.fragment.SearchFragment">
 
     <TextView
         style="@style/HeadText"

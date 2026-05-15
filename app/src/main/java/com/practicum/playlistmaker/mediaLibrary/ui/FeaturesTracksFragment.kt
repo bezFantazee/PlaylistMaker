@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.MediaLibraryFeaturedTracksBinding
-import com.practicum.playlistmaker.mediaLibrary.presenter.FeaturedTracksState
-import com.practicum.playlistmaker.mediaLibrary.presenter.FeaturesTracksViewModel
-import com.practicum.playlistmaker.player.ui.activity.AudioPlayerFragment
+import com.practicum.playlistmaker.mediaLibrary.ui.presenter.feturedTracks.FeaturedTracksUiState
+import com.practicum.playlistmaker.mediaLibrary.ui.presenter.feturedTracks.FeaturesTracksViewModel
+import com.practicum.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
 import com.practicum.playlistmaker.utils.debounce
@@ -59,15 +58,15 @@ class FeaturesTracksFragment : BindingFragment<MediaLibraryFeaturedTracksBinding
         binding.featuredTracks.adapter = tracksAdapter
 
         //работа со viewModel
-        viewModel.observeFeaturedTracksState().observe(viewLifecycleOwner){
+        viewModel.observeFeaturedTracksUiState().observe(viewLifecycleOwner){
             render(it)
         }
     }
 
-    private fun render(state: FeaturedTracksState) {
+    private fun render(state: FeaturedTracksUiState) {
         when(state) {
-            is FeaturedTracksState.Empty -> showEmpty()
-            is FeaturedTracksState.Content -> showContent(state.tracks)
+            is FeaturedTracksUiState.Empty -> showEmpty()
+            is FeaturedTracksUiState.Content -> showContent(state.tracks)
         }
     }
 

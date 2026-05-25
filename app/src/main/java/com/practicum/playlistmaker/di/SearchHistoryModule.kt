@@ -35,6 +35,7 @@ val searchHistoryModel = module {
     single<TracksHistoryRepository> {
         TracksHistoryRepositoryImpl(
             get(named(SEARCH_STORAGE_CLIENT)),
+            get(),
             get()
         )
     }

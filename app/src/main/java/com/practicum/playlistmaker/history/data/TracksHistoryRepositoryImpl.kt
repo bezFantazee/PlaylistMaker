@@ -1,15 +1,16 @@
 package com.practicum.playlistmaker.history.data
 
 import com.practicum.playlistmaker.history.domain.TracksHistoryRepository
-import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDatabase
+import com.practicum.playlistmaker.mediaLibrary.data.db.FeaturedTrackDao
+import com.practicum.playlistmaker.mediaLibrary.data.db.SavedTrackDao
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlin.compareTo
 
 class TracksHistoryRepositoryImpl(
     private val prefStorageClient: StorageClient<MutableList<Track>>,
-    private val trackDatabase: TrackDatabase
+    private val featuredTrackDatabaseDao: FeaturedTrackDao,
+    private val savedTrackDatabaseDao: SavedTrackDao
 ):
     TracksHistoryRepository {
     override fun saveTrack(track: Track) {
@@ -25,7 +26,8 @@ class TracksHistoryRepositoryImpl(
     }
 
     override suspend fun getTracks(): Flow<List<Track>> = flow{
-        val featuredIds = trackDatabase.trackDao().getFeaturedTracksId().toSet()
+        val featuredIds = featuredTrackDatabaseDao.getFeaturedTracksId().toSet()
+        val savedIds = savedTrackDatabaseDao.getSavedTracksId().toSet()
         val tracks = prefStorageClient.get() ?: emptyList()
 
         if (tracks.isEmpty()) {
@@ -35,7 +37,9 @@ class TracksHistoryRepositoryImpl(
 
         emit(
             tracks.map { track ->
-            track.copy(isFavourite = track.trackId in featuredIds)
+            track.copy(
+                isFavourite = track.trackId in featuredIds,
+                isSaved = track.trackId in savedIds)
             }.toMutableList()
         )
     }

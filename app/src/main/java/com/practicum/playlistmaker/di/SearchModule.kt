@@ -38,7 +38,7 @@ val searchModule = module {
 
     //repository
     single<SearchTracksRepository> {
-        SearchTracksRepositoryImpl(get(), get())
+        SearchTracksRepositoryImpl(get(), get(), get())
     }
 
     //interactor

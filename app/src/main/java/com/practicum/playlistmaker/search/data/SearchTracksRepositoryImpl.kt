@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.search.data
 
-import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDatabase
+import com.practicum.playlistmaker.mediaLibrary.data.db.FeaturedTrackDao
+import com.practicum.playlistmaker.mediaLibrary.data.db.SavedTrackDao
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TracksResponse
 import com.practicum.playlistmaker.search.domain.models.SearchResult
@@ -11,7 +12,8 @@ import kotlinx.coroutines.flow.flow
 
 class SearchTracksRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val trackDatabase: TrackDatabase
+    private val featuredTrackDatabaseDao: FeaturedTrackDao,
+    private val savedTrackDatabaseDao: SavedTrackDao
     ):
     SearchTracksRepository {
     override fun searchTracks(expression: String): Flow<SearchResult> = flow {
@@ -19,7 +21,8 @@ class SearchTracksRepositoryImpl(
         when {
             response.resultCode == 200 -> {
                 with(response as TracksResponse){
-                    val featuredTracks = trackDatabase.trackDao().getFeaturedTracksId()
+                    val featuredTracks = featuredTrackDatabaseDao.getFeaturedTracksId()
+                    val savedTracks = savedTrackDatabaseDao.getSavedTracksId()
                     val data = results.map {
                         Track(
                             it.trackId,
@@ -32,7 +35,8 @@ class SearchTracksRepositoryImpl(
                             it.primaryGenreName,
                             it.country,
                             it.previewUrl,
-                            it.trackId in featuredTracks
+                            it.trackId in featuredTracks,
+                            it.trackId in savedTracks
                         )
                     }
                     if (data.isNotEmpty()) {

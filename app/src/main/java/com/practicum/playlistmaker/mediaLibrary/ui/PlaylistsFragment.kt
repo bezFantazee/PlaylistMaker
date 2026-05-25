@@ -1,9 +1,11 @@
 package com.practicum.playlistmaker.mediaLibrary.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.BindingFragment
@@ -13,15 +15,23 @@ import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsAdapter
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsUiState
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsViewModel
-import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.presenter.TracksAdapter
+import com.practicum.playlistmaker.playlist.ui.fragment.DetailsPlaylistFragment
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : BindingFragment<MediaLibraryPlaylistsBinding>() {
+    companion object{
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
     private val viewModel: PlaylistsViewModel by viewModel()
 
     private val playlists = mutableListOf<Playlist>()
-    private val playlistsAdapter = PlaylistsAdapter(playlists)
+
+    //задержка клика
+    private lateinit var onPlaylistClickDebounce: (Int) -> Unit
+    private val playlistsAdapter = PlaylistsAdapter(playlists) { playlistId ->
+        onPlaylistClickDebounce(playlistId)
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -41,6 +51,13 @@ class PlaylistsFragment : BindingFragment<MediaLibraryPlaylistsBinding>() {
 
         binding.addNewPlaylistButton.setOnClickListener {
             findNavController().navigate(R.id.action_mediaLibraryFragment_to_createPlaylistFragment)
+        }
+
+        //инициализация debounce клика по плейлисту
+        onPlaylistClickDebounce = debounce<Int>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { playlistId ->
+            Log.d("12ds", playlistId.toString())
+            findNavController().navigate(R.id.action_mediaLibraryFragment_to_detailsPlaylistFragment,
+                DetailsPlaylistFragment.createArgs(playlistId))
         }
     }
 

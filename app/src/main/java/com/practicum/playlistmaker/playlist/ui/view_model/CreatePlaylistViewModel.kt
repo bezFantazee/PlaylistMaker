@@ -10,12 +10,12 @@ import com.practicum.playlistmaker.mediaLibrary.domain.playlists.PlaylistsIntera
 import com.practicum.playlistmaker.playlist.domain.FileStorageInteractor
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
+open class CreatePlaylistViewModel(
     private val fileStorageInteractor: FileStorageInteractor,
     private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
-    private val imagePath = MutableLiveData<String?>()
+    protected val imagePath = MutableLiveData<String?>()
     fun observeImagePath(): LiveData<String?> = imagePath
 
     fun savePlaylist(playlistName: String, playlistDescription: String?, imagePath: String?){

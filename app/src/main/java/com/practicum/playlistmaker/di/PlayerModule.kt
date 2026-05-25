@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.player.domain.PlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.PlayerRepository
 import com.practicum.playlistmaker.player.domain.TrackCompletionListenerHolder
 import com.practicum.playlistmaker.player.ui.presentation.PlayerViewModel
+import com.practicum.playlistmaker.playlist.ui.view_model.DetailsPlaylistViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

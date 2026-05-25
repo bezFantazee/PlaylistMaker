@@ -19,6 +19,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tracksCount"
+
+        app:layout_constraintVertical_chainStyle="packed"
+
         android:layout_marginHorizontal="8dp"
         android:ellipsize="end"
         android:maxLines="1"
@@ -44,7 +47,7 @@
         android:textSize="11sp"
         android:fontFamily="@font/ys_display_regular"
         android:textFontWeight="400"
-        android:textColor="?attr/colorOnPrimary"
+        android:textColor="?attr/colorOnBackground"
 
         tools:text = "10293908029813098109380911636`9   731781789-0990-8"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

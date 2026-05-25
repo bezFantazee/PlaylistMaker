@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.mediaLibrary.data.playlists
 
+import android.util.Log
 import com.practicum.playlistmaker.mediaLibrary.data.db.PlaylistDao
 import com.practicum.playlistmaker.mediaLibrary.data.db.PlaylistDbConvector
 import com.practicum.playlistmaker.mediaLibrary.data.db.SavedTrackDao
@@ -58,7 +59,91 @@ class PlaylistsDbRepositoryImpl(
         trackDatabaseDao.insertTrack(trackEntity)
     }
 
+    override suspend fun deleteTrackFromPlaylist(playlist: Playlist, trackIdToDelete: Int) {
+        val updatedTracks = playlist.tracks?.filterNot { trackId -> trackId == trackIdToDelete }
+        val playlistEntity = playlistConvector.map(playlist.copy(tracks = updatedTracks, tracksCount = playlist.tracksCount - 1))
+        playlistsDatabaseDao.updatePlaylist(playlistEntity)
+    }
+
+    override suspend fun deleteTrack(track: Track) {
+        val trackEntity = trackConvector.mapToEntity(track) {t ->
+            SavedTrackEntity(
+                trackId = t.trackId,
+                trackName = t.trackName,
+                artistName = t.artistName,
+                trackTimeMillis = t.trackTimeMillis,
+                artworkUrl100 = t.artworkUrl100,
+                collectionName = t.collectionName,
+                releaseDate = t.releaseDate,
+                primaryGenreName = t.primaryGenreName,
+                country = t.country,
+                previewUrl = t.previewUrl,
+                addedAt = System.currentTimeMillis()
+            )
+        }
+        trackDatabaseDao.deleteTrack(trackEntity)
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        val playlistEntity = playlistConvector.map(playlist)
+        playlistsDatabaseDao.deletePlaylist(playlistEntity)
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        val playlistEntity = playlistConvector.map(playlist)
+        playlistsDatabaseDao.updatePlaylist(playlistEntity)
+    }
+
+    override suspend fun getAllPlaylistsTracks(): List<Int> {
+        return playlistsDatabaseDao
+            .getAllPlaylistsTracks()
+            .flatMap { tracksId ->
+                tracksId?.let {
+                    playlistConvector.map(it)
+                } ?: emptyList()
+            }
+            .distinct()
+    }
+
     override suspend fun getSavedTrackIds(): List<Int> {
         return trackDatabaseDao.getSavedTracksId()
+    }
+
+    override fun getPlaylist(playlistId: Int): Flow<Playlist?> {
+        val playlistEntity = playlistsDatabaseDao.getPlaylist(playlistId)
+        return playlistEntity.map { entity ->
+            if(entity != null){
+                playlistConvector.map(entity)
+            } else {
+                null
+            }
+        }
+    }
+
+    override fun getPlaylistTracks(trackIds: List<Int>): Flow<List<Track>> {
+        val allSavedTracks = trackDatabaseDao.getSavedTracks()
+        return allSavedTracks.map { entities ->
+            val tracksMap = entities.associateBy { it.trackId }
+
+            trackIds
+                .asReversed()
+                .mapNotNull { trackId ->
+                    tracksMap[trackId]
+                }
+                .map { entity ->
+                    trackConvector.mapToTrack(
+                        trackId = entity.trackId,
+                        trackName = entity.trackName,
+                        artistName = entity.artistName,
+                        trackTimeMillis = entity.trackTimeMillis,
+                        country = entity.country,
+                        primaryGenreName = entity.primaryGenreName,
+                        releaseDate = entity.releaseDate,
+                        artworkUrl100 = entity.artworkUrl100,
+                        collectionName = entity.collectionName,
+                        previewUrl = entity.previewUrl
+                    )
+                }
+        }
     }
 }

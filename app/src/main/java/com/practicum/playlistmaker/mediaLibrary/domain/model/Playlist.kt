@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker.mediaLibrary.domain.model
 
-import com.practicum.playlistmaker.search.domain.models.Track
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Playlist(
     val playlistId: Int,
     val playlistName: String,
@@ -9,4 +11,4 @@ data class Playlist(
     val imagePath: String?,
     val tracks: List<Int>?,
     val tracksCount: Int
-)
+): Parcelable

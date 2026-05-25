@@ -5,8 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
+import com.practicum.playlistmaker.search.domain.models.Track
 
-class PlaylistsAdapter(private val playlists: List<Playlist>): RecyclerView.Adapter<PlaylistsViewHolder>() {
+class PlaylistsAdapter(
+    private val playlists: List<Playlist>,
+    private val onItemClick: (Int) -> Unit
+): RecyclerView.Adapter<PlaylistsViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -19,7 +23,11 @@ class PlaylistsAdapter(private val playlists: List<Playlist>): RecyclerView.Adap
         holder: PlaylistsViewHolder,
         position: Int
     ) {
-        holder.bind(playlists[position])
+        val playlist = playlists[position]
+        holder.bind(playlist)
+        holder.itemView.setOnClickListener {
+            onItemClick(playlist.playlistId)
+        }
     }
 
     override fun getItemCount(): Int = playlists.size

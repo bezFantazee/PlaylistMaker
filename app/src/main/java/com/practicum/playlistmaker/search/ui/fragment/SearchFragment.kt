@@ -25,7 +25,6 @@ import kotlin.getValue
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     companion object {
-        const val SEARCH_PREFERENCES = "search_history_pref"
         private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
         private const val AMOUNT_DEF = ""
         private const val CLICK_DEBOUNCE_DELAY = 1000L

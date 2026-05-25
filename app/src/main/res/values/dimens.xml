@@ -31,4 +31,6 @@
 
     <!-- Для старых версий библиотек (Material 2) -->
     <dimen name="design_bottom_navigation_margin" tools:override="true">0dp</dimen>
+
+    <dimen name="margin_24">24dp</dimen>
 </resources>

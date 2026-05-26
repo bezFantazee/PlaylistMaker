@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.playlist.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -210,20 +209,30 @@ class DetailsPlaylistFragment : BindingFragment<FragmentDetailsPlaylistBinding>(
     }
 
     private fun setTracks(tracks: List<Track>?, tracksFullTime: String?) {
-        if (tracks.isNullOrEmpty() || tracksFullTime == "0" || tracksFullTime == null) {
+
+        playlistTracks.clear()
+
+        if (!tracks.isNullOrEmpty()) {
+            playlistTracks.addAll(tracks)
+        }
+
+        tracksAdapter.notifyDataSetChanged()
+
+        val time = tracksFullTime?.toIntOrNull() ?: 0
+
+        binding.playlistTracksFullTime.text =
+            requireContext().resources.getQuantityString(
+                R.plurals.tracks_time,
+                time,
+                time
+            )
+
+        if (tracks.isNullOrEmpty()) {
+
             binding.tracksPlaceholder.visibility = View.VISIBLE
         } else {
-            binding.tracksPlaceholder.visibility = View.GONE
-            binding.timeAndTracksGroup.visibility = View.VISIBLE
-            playlistTracks.clear()
-            playlistTracks.addAll(tracks)
-            tracksAdapter.notifyDataSetChanged()
 
-            binding.playlistTracksFullTime.text = requireContext().resources.getQuantityString(
-                R.plurals.tracks_time,
-                tracksFullTime.toInt(),
-                tracksFullTime
-            )
+            binding.tracksPlaceholder.visibility = View.GONE
         }
     }
 
@@ -257,7 +266,7 @@ class DetailsPlaylistFragment : BindingFragment<FragmentDetailsPlaylistBinding>(
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.on_delete_track)
             .setNegativeButton(R.string.net, null)
-            .setPositiveButton(R.string.da) {dialog, which ->
+            .setPositiveButton(R.string.da) { _, _ ->
                 viewModel.deleteTrackFromPlaylist(track)
                 tracksAdapter.notifyDataSetChanged()
             }
@@ -269,7 +278,7 @@ class DetailsPlaylistFragment : BindingFragment<FragmentDetailsPlaylistBinding>(
             .setTitle(R.string.on_delete_playlist_title)
             .setMessage(R.string.on_delete_playlist_text)
             .setNeutralButton(R.string.neitral_button_text, null)
-            .setPositiveButton(R.string.on_delete_playlist_positive_button_text) { dialog, which ->
+            .setPositiveButton(R.string.on_delete_playlist_positive_button_text) { _, _ ->
                 viewModel.deletePlaylist()
                 findNavController().navigateUp()
             }

@@ -10,7 +10,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".mediaLibrary.ui.MediaLibraryFragment">
     <TextView
-        style="@style/HeadText"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/PrimaryText"
         android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
         android:text="@string/media_library" />

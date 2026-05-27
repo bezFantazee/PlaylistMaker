@@ -11,7 +11,9 @@
     tools:context=".settings.ui.fragment.SettingsFragment">
 
     <TextView
-        style ="@style/HeadText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style ="@style/PrimaryText"
         android:layout_marginStart="@dimen/title_margin_start"
         android:layout_marginTop="@dimen/title_margin_top"
         android:text="@string/settings" />
@@ -45,13 +47,13 @@
         android:id="@+id/share_button"
         >
         <TextView
-            style ="@style/SettingsButtonText"
+            style ="@style/MenuText"
             android:text="@string/share_app"
             android:layout_weight="1"
             />
 
         <ImageView
-            style = "@style/Icon"
+            style = "@style/SettingsIcon"
             app:srcCompat = "@drawable/ic_share"
             android:layout_marginEnd="12dp"
             />
@@ -63,13 +65,13 @@
         android:id="@+id/write_to_support_button"
         >
         <TextView
-            style="@style/SettingsButtonText"
+            style="@style/MenuText"
             android:text="@string/write_to_support"
             android:layout_weight="1"
             />
 
         <ImageView
-            style="@style/Icon"
+            style="@style/SettingsIcon"
             app:srcCompat = "@drawable/ic_support"
             android:layout_marginEnd="12dp"
             />
@@ -82,13 +84,13 @@
         android:gravity="center_vertical"
         >
         <TextView
-            style ="@style/SettingsButtonText"
+            style ="@style/MenuText"
             android:text="@string/user_agreement"
             android:layout_weight="1"
             />
 
         <ImageView
-            style="@style/Icon"
+            style="@style/SettingsIcon"
             app:srcCompat = "@drawable/ic_arrow2"
             android:layout_marginEnd="12dp"
             />

@@ -7,6 +7,7 @@
     <dimen name="standart_margin">20dp</dimen>
     <dimen name="big_margin">24dp</dimen>
 
+    <dimen name="big_text">24sp</dimen>
     <dimen name="standart_text_size">22sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="very_small_text">12sp</dimen>

@@ -60,7 +60,9 @@
 
         app:layout_constraintStart_toStartOf="@id/playlistImage"
         app:layout_constraintTop_toBottomOf="@id/playlistImage"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+
+        android:stateListAnimator="@animator/edit_text_focus"/>
 
     <EditText
         android:id="@+id/playlistDescription"
@@ -76,7 +78,9 @@
 
         app:layout_constraintTop_toBottomOf="@id/playlistName"
         app:layout_constraintStart_toStartOf="@id/playlistImage"
-        android:layout_marginTop="@dimen/small_margin"/>
+        android:layout_marginTop="@dimen/small_margin"
+
+        android:stateListAnimator="@animator/edit_text_focus"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveButton"

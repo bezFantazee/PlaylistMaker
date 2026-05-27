@@ -10,7 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".mediaLibrary.ui.PlaylistsFragment">
     
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/addNewPlaylistButton"
         style="@style/SmallButton"
         android:layout_width="133dp"

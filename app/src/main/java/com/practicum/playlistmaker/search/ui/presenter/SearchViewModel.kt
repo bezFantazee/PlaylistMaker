@@ -9,13 +9,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.di.SETTINGS_STORAGE_CLIENT
 import com.practicum.playlistmaker.history.domain.TracksHistoryInteractor
 import com.practicum.playlistmaker.search.domain.SearchTracksInteractor
 import com.practicum.playlistmaker.search.domain.models.SearchResult
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.HistoryState
 import com.practicum.playlistmaker.search.ui.SearchState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -30,12 +29,15 @@ class SearchViewModel(
     }
 
     //live data
-    private val screenStateLiveData = MutableLiveData<SearchState>()
+    private val screenStateLiveData = MutableLiveData<SearchState>(SearchState.Initial)
     fun observeScreenState(): LiveData<SearchState> = screenStateLiveData
 
     //для поисковой строки
     private var latestSearchText: String? = null
     private val handler = Handler(Looper.getMainLooper())
+
+    //job для управления выполнением поиска
+    private var searchJob: Job? = null
 
     //логика поиска
     fun searchDebounce(changedText: String) {
@@ -62,7 +64,7 @@ class SearchViewModel(
             renderScreenState(
                 SearchState.Loading
             )
-            viewModelScope.launch {
+            searchJob = viewModelScope.launch {
                 searchTracksInteractor
                     .searchTracks(newSearchText)
                     .collect { result ->
@@ -94,7 +96,12 @@ class SearchViewModel(
                     }
             }
         }
+    }
 
+    fun cancelSearch() {
+        searchJob?.cancel()
+        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        screenStateLiveData.value = SearchState.Initial
     }
 
     override fun onCleared() {

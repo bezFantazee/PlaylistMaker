@@ -17,6 +17,8 @@ class MediaPlayerAudioPlayerClient(
     }
 
     override fun prepare(url: String) {
+        mediaPlayer.reset()
+
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -37,5 +39,12 @@ class MediaPlayerAudioPlayerClient(
 
     override fun resetMediaPlayer() {
         mediaPlayer.reset()
+    }
+
+    override fun replay() {
+        mediaPlayer.seekTo(0)
+        mediaPlayer.setOnSeekCompleteListener {
+            mediaPlayer.start()
+        }
     }
 }

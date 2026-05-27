@@ -7,4 +7,5 @@ interface PlayerRepository {
     fun getCurrentTime(): Int
     fun isPlaying(): Boolean
     fun resetMediaPlayer()
+    fun replay()
 }

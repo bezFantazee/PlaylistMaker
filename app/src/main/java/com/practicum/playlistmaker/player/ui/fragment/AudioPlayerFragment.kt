@@ -49,6 +49,26 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
         viewModel.saveToPlaylist(playlist)
     }
 
+    //переменная для упревления колбеком bottomSheet
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private val bottomSheetCallback =
+        object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        }
+
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -142,22 +162,9 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
         }
 
         //BottomSheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetContainer)
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetContainer)
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.visibility = View.GONE
-                    }
-                    else -> {
-                        binding.overlay.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            override fun onSlide(p0: View, p1: Float) {}
-        })
+        bottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
 
         //список плейлистов
         binding.playlists.layoutManager= LinearLayoutManager(requireContext())
@@ -174,6 +181,11 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
+    }
+
+    override fun onDestroyView() {
+        bottomSheetBehavior.removeBottomSheetCallback(bottomSheetCallback)
+        super.onDestroyView()
     }
     //состояния экрана
     private fun render(state: PlayerState){
@@ -233,7 +245,7 @@ class AudioPlayerFragment : BindingFragment<FragmentAudioPlayerBinding>() {
 
     //BottomSheet
     private fun showBottomSheet(isBottomSheetExpanded: Boolean) {
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetContainer)
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetContainer)
         val peekHeight = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             505f,

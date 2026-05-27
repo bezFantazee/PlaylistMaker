@@ -4,7 +4,8 @@
     android:layout_height="61dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    android:paddingHorizontal="13dp">
     <ImageView
         android:id="@+id/playlistImage"
         style="@style/SmallCardImage"

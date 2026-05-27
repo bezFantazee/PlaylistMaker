@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.BindingFragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.MediaLibraryPlaylistsBinding
+import com.practicum.playlistmaker.extensions.calculateAdaptiveSpanCount
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsAdapter
 import com.practicum.playlistmaker.mediaLibrary.ui.presenter.playlists.PlaylistsUiState
@@ -46,7 +47,12 @@ class PlaylistsFragment : BindingFragment<MediaLibraryPlaylistsBinding>() {
             render(it)
         }
 
-        binding.playlists.layoutManager = GridLayoutManager(requireContext(), 2)
+        //установка количества карточек
+        val spanCount = calculateAdaptiveSpanCount(
+            cardWidthPx = resources.getDimensionPixelSize(R.dimen.playlist_card_width),
+            spacingPx = resources.getDimensionPixelSize(R.dimen.playlist_grid_spacing)
+        )
+        binding.playlists.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.playlists.adapter = playlistsAdapter
 
         binding.addNewPlaylistButton.setOnClickListener {

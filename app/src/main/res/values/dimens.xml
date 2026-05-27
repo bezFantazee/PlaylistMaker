@@ -7,10 +7,15 @@
     <dimen name="standart_margin">20dp</dimen>
     <dimen name="big_margin">24dp</dimen>
 
+    <dimen name="content_horizontal_margin">16dp</dimen>
+    <dimen name="content_vertical_margin">0dp</dimen>
+
     <dimen name="big_text">24sp</dimen>
     <dimen name="standart_text_size">22sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="very_small_text">12sp</dimen>
+
+    <dimen name="max_width">400dp</dimen>
 
     <dimen name="distance_after_icon">10dp</dimen>
     <dimen name="icon_size">24dp</dimen>
@@ -19,6 +24,9 @@
 
     <dimen name="button_margin_horisontal">48dp</dimen>
     <dimen name="setting_height">55dp</dimen>
+
+    <dimen name="playlist_card_width">160dp</dimen>
+    <dimen name="playlist_grid_spacing">8dp</dimen>
 
     <!-- Принудительно ограничиваем высоту самого бара -->
     <dimen name="m3_bottom_nav_min_height" tools:override="true">56dp</dimen>

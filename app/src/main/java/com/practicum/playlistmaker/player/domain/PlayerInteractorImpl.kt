@@ -27,4 +27,8 @@ class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInt
     override fun onCleared() {
         repository.resetMediaPlayer()
     }
+
+    override fun replay() {
+        repository.replay()
+    }
 }

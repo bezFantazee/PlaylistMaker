@@ -185,8 +185,7 @@
 
         <include
             android:id="@+id/playlistSmallCard"
-            layout="@layout/playlist_small_card"
-            android:layout_marginStart="@dimen/small_margin"/>
+            layout="@layout/playlist_small_card"/>
 
         <TextView
             android:id="@+id/shareMenuButton"

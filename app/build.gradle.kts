@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.fragment.ktx)
 
+    //windowMetrics
+    implementation("androidx.window:window:1.3.0")
+
     implementation(libs.koin.android)
     implementation(libs.glide)
     implementation(libs.firebase.crashlytics.buildtools)

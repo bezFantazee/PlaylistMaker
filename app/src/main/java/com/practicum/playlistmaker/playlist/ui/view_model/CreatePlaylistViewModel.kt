@@ -25,7 +25,6 @@ open class CreatePlaylistViewModel(
                 playlistName = playlistName,
                 playlistDescription = playlistDescription,
                 imagePath = imagePath,
-                tracks = null,
                 tracksCount = 0
             )
             playlistsInteractor.savePlaylist(playlist)

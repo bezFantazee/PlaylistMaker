@@ -92,7 +92,7 @@ class PlayerViewModel(
         viewModelScope.launch {
             val playlistTracks = playlistsInteractor.getPlaylistTracksId(playlist.playlistId)
             if(track.trackId !in playlistTracks) {
-                playlistsInteractor.saveTrack(playlist, track)
+                playlistsInteractor.saveTrack(playlist.playlistId, track)
                 hideBottomSheet()
                 showToast.postValue(
                     PlayerEvent.ShowToast(

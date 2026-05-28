@@ -9,6 +9,5 @@ data class Playlist(
     val playlistName: String,
     val playlistDescription: String?,
     val imagePath: String?,
-    val tracks: List<Int>?,
     val tracksCount: Int
 ): Parcelable

@@ -34,8 +34,6 @@ class DetailsPlaylistViewModel(
 
     private fun loadPlaylist() {
         viewModelScope.launch {
-            val savedTracksId = playlistsInteractor.getPlaylistTracksId(playlistId)
-
             combine(
                 playlistsInteractor.getPlaylistById(playlistId),
                 playlistsInteractor.getPlaylistTracksByPlaylistId(playlistId)
@@ -65,7 +63,7 @@ class DetailsPlaylistViewModel(
             val currentPlaylist = currentState.playlist
 
             viewModelScope.launch {
-               playlistsInteractor.deleteTrack(currentPlaylist, track)
+               playlistsInteractor.deleteTrack(currentPlaylist.playlistId, track.trackId)
             }
         }
     }
@@ -74,9 +72,10 @@ class DetailsPlaylistViewModel(
         val currentState = playlistState.value
 
         if(currentState is DetailsPlaylistState.Content) {
+            val currentTracks = currentState.tracks
             val currentPlaylist = currentState.playlist
 
-            if(currentPlaylist.tracks.isNullOrEmpty()){
+            if(currentTracks.isNullOrEmpty()){
                 showToast.postValue(
                     DetailPlaylistEvent.ShowToast(
                         R.string.on_share_empty_playlist
@@ -87,7 +86,7 @@ class DetailsPlaylistViewModel(
                 sharingInteractor.sharePlaylist(
                     currentPlaylist.playlistName,
                     currentPlaylist.playlistDescription,
-                    currentState.tracks!!)
+                    currentState.tracks)
             }
         }
     }

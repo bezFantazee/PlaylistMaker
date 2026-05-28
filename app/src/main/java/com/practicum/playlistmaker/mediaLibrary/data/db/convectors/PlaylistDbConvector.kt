@@ -1,10 +1,10 @@
-package com.practicum.playlistmaker.mediaLibrary.data.db
+package com.practicum.playlistmaker.mediaLibrary.data.db.convectors
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.mediaLibrary.data.db.dto.PlaylistWithCount
 import com.practicum.playlistmaker.mediaLibrary.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
-import com.practicum.playlistmaker.search.domain.models.Track
 
 class PlaylistDbConvector(
     private val gson: Gson
@@ -14,19 +14,16 @@ class PlaylistDbConvector(
             playlistId = playlist.playlistId,
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
-            imagePath = playlist.imagePath,
-            tracks = listToString(playlist.tracks),
-            tracksCount = playlist.tracks?.size ?: 0
+            imagePath = playlist.imagePath
         )
     }
 
-    fun map(playlist: PlaylistEntity): Playlist {
+    fun map(playlist: PlaylistWithCount): Playlist {
         return Playlist(
             playlistId = playlist.playlistId,
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
             imagePath = playlist.imagePath,
-            tracks = stringToList(playlist.tracks),
             tracksCount = playlist.tracksCount
         )
     }

@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.mediaLibrary.domain.playlists
 
-import android.util.Log
+import com.practicum.playlistmaker.mediaLibrary.domain.TracksDbRepository
 import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
@@ -8,92 +8,62 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class PlaylistsInteractorImpl(
-    private val repository: PlaylistsDbRepository
+    private val playlistRepository: PlaylistsDbRepository,
+    private val tracksRepository: TracksDbRepository
 ) : PlaylistsInteractor{
     override suspend fun savePlaylist(playlist: Playlist) {
-        repository.savePlaylist(playlist)
+        playlistRepository.savePlaylist(playlist)
     }
 
     override fun getPlaylists(): Flow<List<Playlist>> {
-        return repository.getPlaylists()
+        return playlistRepository.getPlaylists()
     }
 
     override suspend fun getPlaylistTracksId(playlistId: Int): List<Int> {
-        return repository.getPlaylistTracksId(playlistId) ?: emptyList()
+        return playlistRepository.getPlaylistTracksId(playlistId) ?: emptyList()
     }
 
-    override suspend fun saveTrack(playlist: Playlist, track: Track) {
-        repository.saveTrack(track)
-        repository.addTrackToPlaylist(playlist, track.trackId)
+    override suspend fun saveTrack(playlistId: Int, track: Track) {
+        tracksRepository.saveTrack(track)
+        playlistRepository.addTrackToPlaylist(playlistId, track.trackId)
     }
 
     override suspend fun deleteTrack(
-        playlist: Playlist,
-        track: Track
+        playlistId: Int,
+        trackId: Int
     ) {
-
-        withContext(Dispatchers.IO) {
-
-            repository.deleteTrackFromPlaylist(
-                playlist,
-                track.trackId
-            )
-
-            val allPlaylistsTracks =
-                repository.getAllPlaylistsTracks()
-
-            if (track.trackId !in allPlaylistsTracks) {
-                repository.deleteTrack(track)
-            }
-        }
+        playlistRepository.deleteTrackFromPlaylist(trackId, playlistId)
+        tracksRepository.deleteTrackIfUnused(trackId)
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
-        withContext(Dispatchers.IO) {
-            repository.deletePlaylist(playlist)
 
-            val trackIdsToDelete = playlist.tracks ?: return@withContext
-            if (trackIdsToDelete.isEmpty()) return@withContext
+        val trackIds = playlistRepository.getPlaylistTracksId(playlist.playlistId)
 
-            val allRemainingTracksSet = repository.getAllPlaylistsTracks().toSet()
+        playlistRepository.deletePlaylist(playlist)
 
-            val tracks = repository.getPlaylistTracks(trackIdsToDelete).first()
-
-            tracks.forEach { track ->
-                if (track.trackId !in allRemainingTracksSet) {
-                    repository.deleteTrack(track)
-                }
-            }
+        trackIds?.forEach { trackId ->
+            tracksRepository.deleteTrackIfUnused(trackId)
         }
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
-        repository.updatePlaylist(playlist)
+        playlistRepository.updatePlaylist(playlist)
     }
 
-    override suspend fun getSavedTrackIds(): List<Int> {
-        return repository.getSavedTrackIds()
+    override suspend fun getAllPlaylistsTrackIds(): List<Int> {
+        return playlistRepository.getAllPlaylistsTracksId()
     }
 
     override fun getPlaylistById(playlistId: Int): Flow<Playlist?> {
-        return repository.getPlaylist(playlistId)
-    }
-
-    override fun getPlaylistTracks(trackIds: List<Int>): Flow<List<Track>> {
-        return repository.getPlaylistTracks(trackIds)
+        return playlistRepository.getPlaylist(playlistId)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getPlaylistTracksByPlaylistId(playlistId: Int): Flow<List<Track>> {
-        return repository.getPlaylist(playlistId)
-            .flatMapLatest { playlist ->
-                repository.getPlaylistTracks(
-                    playlist?.tracks ?: emptyList()
-                )
-            }
+        return playlistRepository.getPlaylistTracks(playlistId)
     }
 }

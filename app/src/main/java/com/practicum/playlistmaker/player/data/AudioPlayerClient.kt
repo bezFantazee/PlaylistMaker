@@ -7,4 +7,5 @@ interface AudioPlayerClient {
     fun getTime(): Int
     fun isPlaying(): Boolean
     fun resetMediaPlayer()
+    fun replay()
 }

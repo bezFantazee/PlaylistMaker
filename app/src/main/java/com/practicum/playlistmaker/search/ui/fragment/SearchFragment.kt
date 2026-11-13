@@ -25,7 +25,6 @@ import kotlin.getValue
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     companion object {
-        const val SEARCH_PREFERENCES = "search_history_pref"
         private const val SEARCH_TEXT_KEY = "SEARCH_TEXT_KEY"
         private const val AMOUNT_DEF = ""
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -82,7 +81,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             SEARCH_TEXT_KEY,
             AMOUNT_DEF
         ) ?: ""
-        binding.searchInput.setText(searchText)
+        //binding.searchInput.setText(searchText)
 
         //восстановление видимости кнопки очистки
         binding.clearButton.visibility = clearButtonVisibility(searchText)
@@ -90,6 +89,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         //реализация ввода в поиск
         binding.clearButton.setOnClickListener { //логика работы кнопки очистки пользовательского ввода
             binding.searchInput.setText("")
+            viewModel.cancelSearch()
 
             val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.searchInput.windowToken, 0)
@@ -163,6 +163,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     //состояния экрана
     private fun render(searchState: SearchState) {
         when(searchState) {
+            is SearchState.Initial -> { showInitial()}
             is SearchState.Loading -> showSearchLoading()
             is SearchState.Content -> showSearchContent(searchState.tracks)
             is SearchState.Error -> showSearchError(searchState.errorMessage, searchState.extraMessage)
@@ -173,6 +174,12 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
     //состояния экрана Поиск
+    private fun showInitial() {
+        binding.searchPlaceholder.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
+        binding.tracksList.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+    }
     private fun showSearchLoading(){
         binding.searchPlaceholder.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE

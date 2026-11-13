@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.playlist.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -24,13 +27,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import kotlin.getValue
 
-class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
+open class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
     companion object {
-        private const val PLAYLIST_NAME_KEY = "PLAYLIST_NAME_KEY"
-        private val PLAYLIST_DESCRIPTION_KEY = "PLAYLIST_DESCRIPTION_KEY"
+        const val PLAYLIST_NAME_KEY = "PLAYLIST_NAME_KEY"
+        val PLAYLIST_DESCRIPTION_KEY = "PLAYLIST_DESCRIPTION_KEY"
         private val AMOUNT_DEF = null
     }
-    private val viewModel: CreatePlaylistViewModel by viewModel()
+    protected open val viewModel: CreatePlaylistViewModel by viewModel()
 
     var playlistName: String? = null
     var playlistDescription: String? = null
@@ -75,7 +78,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
             }
 
         binding.backButton.setOnClickListener {
-            if(imagePath != null || playlistName != null || playlistDescription != null) {
+            if(shouldShowExternalDialog()) {
                 confirmDialog.show()
             } else {
                 findNavController().navigateUp()
@@ -83,7 +86,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if(imagePath != null || playlistName != null || playlistDescription != null) {
+            if(shouldShowExternalDialog()) {
                 confirmDialog.show()
             }
         }
@@ -112,11 +115,7 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         }
 
         binding.saveButton.setOnClickListener {
-            if (playlistName != null) {
-                viewModel.savePlaylist(playlistName!!, playlistDescription, imagePath)
-                makeToastMessage( getString(R.string.create_playlist_toast, playlistName))
-                findNavController().navigateUp()
-            }
+            onSavePlaylist()
         }
     }
 
@@ -127,11 +126,25 @@ class CreatePlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
         outState.putString(PLAYLIST_DESCRIPTION_KEY, playlistDescription)
     }
 
+    protected open fun onSavePlaylist() {
+        if (playlistName != null) {
+            viewModel.savePlaylist(playlistName!!, playlistDescription, imagePath)
+            makeToastMessage( getString(R.string.create_playlist_toast, playlistName))
+            findNavController().navigateUp()
+        }
+    }
+
+    protected open fun shouldShowExternalDialog(): Boolean {
+        return imagePath != null ||
+                playlistName != null ||
+                playlistDescription != null
+    }
+
     private fun makeToastMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun setImage(path: String){
+    protected fun setImage(path: String){
         Glide.with(requireContext())
             .load(File(path))
             .transform(CenterCrop(),

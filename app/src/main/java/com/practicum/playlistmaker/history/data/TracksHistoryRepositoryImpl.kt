@@ -1,8 +1,8 @@
 package com.practicum.playlistmaker.history.data
 
 import com.practicum.playlistmaker.history.domain.TracksHistoryRepository
-import com.practicum.playlistmaker.mediaLibrary.data.db.FeaturedTrackDao
-import com.practicum.playlistmaker.mediaLibrary.data.db.SavedTrackDao
+import com.practicum.playlistmaker.mediaLibrary.data.db.dao.FeaturedTrackDao
+import com.practicum.playlistmaker.mediaLibrary.data.db.dao.PlaylistTrackDao
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 class TracksHistoryRepositoryImpl(
     private val prefStorageClient: StorageClient<MutableList<Track>>,
     private val featuredTrackDatabaseDao: FeaturedTrackDao,
-    private val savedTrackDatabaseDao: SavedTrackDao
+    private val playlistTracksDao: PlaylistTrackDao
 ):
     TracksHistoryRepository {
     override fun saveTrack(track: Track) {
@@ -27,7 +27,7 @@ class TracksHistoryRepositoryImpl(
 
     override suspend fun getTracks(): Flow<List<Track>> = flow{
         val featuredIds = featuredTrackDatabaseDao.getFeaturedTracksId().toSet()
-        val savedIds = savedTrackDatabaseDao.getSavedTracksId().toSet()
+        val savedIds = playlistTracksDao.getAllPlaylistsTracksId().toSet()
         val tracks = prefStorageClient.get() ?: emptyList()
 
         if (tracks.isEmpty()) {

@@ -4,6 +4,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed interface SearchState {
     //поиск
+    object Initial: SearchState
     object Loading: SearchState
 
     data class Content(

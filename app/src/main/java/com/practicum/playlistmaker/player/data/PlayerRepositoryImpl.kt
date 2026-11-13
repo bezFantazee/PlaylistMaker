@@ -28,4 +28,8 @@ class PlayerRepositoryImpl(
     override fun resetMediaPlayer() {
         audioPlayerClient.resetMediaPlayer()
     }
+
+    override fun replay() {
+        audioPlayerClient.replay()
+    }
 }

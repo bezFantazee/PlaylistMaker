@@ -5,5 +5,5 @@ import com.practicum.playlistmaker.mediaLibrary.domain.model.Playlist
 data class PlayerUiState(
     val playerState: PlayerState,
     val isBottomSheetExpanded: Boolean = false,
-    val playlists: List<Playlist> = emptyList()
+    val playlists: List<Playlist> = emptyList(),
 )

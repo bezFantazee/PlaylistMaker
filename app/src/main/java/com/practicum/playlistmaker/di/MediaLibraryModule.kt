@@ -1,11 +1,14 @@
 package com.practicum.playlistmaker.di
 
 import androidx.room.Room
-import com.practicum.playlistmaker.mediaLibrary.data.db.PlaylistDbConvector
+import com.practicum.playlistmaker.mediaLibrary.data.db.convectors.PlaylistDbConvector
+import com.practicum.playlistmaker.mediaLibrary.data.db.dao.TrackDao
 import com.practicum.playlistmaker.mediaLibrary.data.featuredTracks.FeaturedTracksRepositoryImpl
 import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDatabase
-import com.practicum.playlistmaker.mediaLibrary.data.db.TrackDbConvertor
+import com.practicum.playlistmaker.mediaLibrary.data.db.convectors.TrackDbConvertor
 import com.practicum.playlistmaker.mediaLibrary.data.playlists.PlaylistsDbRepositoryImpl
+import com.practicum.playlistmaker.mediaLibrary.data.tracks.TracksDbRepositoryImpl
+import com.practicum.playlistmaker.mediaLibrary.domain.TracksDbRepository
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractor
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksInteractorImpl
 import com.practicum.playlistmaker.mediaLibrary.domain.featuredTracks.FeaturedTracksRepository
@@ -27,7 +30,8 @@ val mediaLibraryModule = module{
     }
 
     single { get<TrackDatabase>().featuredTrackDao() }
-    single { get<TrackDatabase>().savedTrackDao()}
+    single { get<TrackDatabase>().playlistTrackDao()}
+    single {get<TrackDatabase>().trackDao()}
 
     single {get<TrackDatabase>().playlistDao()}
 
@@ -41,13 +45,16 @@ val mediaLibraryModule = module{
     single<PlaylistsDbRepository> {
         PlaylistsDbRepositoryImpl(get(), get(), get(), get())
     }
+    single<TracksDbRepository> {
+        TracksDbRepositoryImpl(get(), get(), get(), get())
+    }
 
     //interactors
     single<FeaturedTracksInteractor> {
-        FeaturedTracksInteractorImpl(get())
+        FeaturedTracksInteractorImpl(get(), get())
     }
     single<PlaylistsInteractor>{
-        PlaylistsInteractorImpl(get())
+        PlaylistsInteractorImpl(get(), get())
     }
 
     //viewModel

@@ -5,11 +5,17 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistsDbRepository {
+    //работа с плейлистами
     suspend fun savePlaylist(playlist: Playlist)
     fun getPlaylists(): Flow<List<Playlist>>
-    suspend fun getPlaylistTracksId(playlistId: Int): List<Int>?
-    suspend fun addTrackToPlaylist(playlist: Playlist, trackId: Int)
+    fun getPlaylist(playlistId: Int): Flow<Playlist?>
+    suspend fun deletePlaylist(playlist: Playlist)
+    suspend fun updatePlaylist(playlist: Playlist)
 
-    suspend fun saveTrack(track: Track)
-    suspend fun getSavedTrackIds(): List<Int>
+    //работа с треками
+    suspend fun deleteTrackFromPlaylist(trackId: Int, playlistId: Int)
+    suspend fun getPlaylistTracksId(playlistId: Int): List<Int>?
+    suspend fun addTrackToPlaylist(playlistId: Int, trackId: Int)
+    suspend fun getAllPlaylistsTracksId(): List<Int>
+    fun getPlaylistTracks(playlistId: Int): Flow<List<Track>>
 }

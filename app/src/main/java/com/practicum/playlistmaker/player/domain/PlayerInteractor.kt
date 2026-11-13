@@ -8,4 +8,5 @@ interface PlayerInteractor {
 
     fun isPlaying(): Boolean
     fun onCleared()
+    fun replay()
 }

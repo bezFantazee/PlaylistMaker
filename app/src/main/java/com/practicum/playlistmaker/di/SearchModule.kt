@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.di
 
 import com.google.gson.Gson
+import com.practicum.playlistmaker.BuildConfig
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.SearchTracksRepositoryImpl
@@ -24,7 +25,7 @@ val searchModule = module {
     //data
     single<TrackApiService> {
         Retrofit.Builder()
-            .baseUrl("https://itunes.apple.com")
+            .baseUrl(BuildConfig.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TrackApiService::class.java)

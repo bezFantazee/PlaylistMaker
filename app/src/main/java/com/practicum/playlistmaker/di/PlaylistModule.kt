@@ -9,6 +9,8 @@ import com.practicum.playlistmaker.playlist.domain.FileStorageInteractor
 import com.practicum.playlistmaker.playlist.domain.FileStorageInteractorImpl
 import com.practicum.playlistmaker.playlist.domain.FileStorageRepository
 import com.practicum.playlistmaker.playlist.ui.view_model.CreatePlaylistViewModel
+import com.practicum.playlistmaker.playlist.ui.view_model.DetailsPlaylistViewModel
+import com.practicum.playlistmaker.playlist.ui.view_model.EditPlaylistViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -32,5 +34,13 @@ val playlistModule = module{
     //viewModel
     viewModel {
         CreatePlaylistViewModel(get(), get())
+    }
+
+    viewModel { (playlistId: Int) ->
+        DetailsPlaylistViewModel(playlistId, get(), get())
+    }
+
+    viewModel {
+        EditPlaylistViewModel(get(), get())
     }
 }

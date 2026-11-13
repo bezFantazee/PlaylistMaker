@@ -92,7 +92,7 @@ class PlayerViewModel(
         viewModelScope.launch {
             val playlistTracks = playlistsInteractor.getPlaylistTracksId(playlist.playlistId)
             if(track.trackId !in playlistTracks) {
-                playlistsInteractor.saveTrack(playlist, track)
+                playlistsInteractor.saveTrack(playlist.playlistId, track)
                 hideBottomSheet()
                 showToast.postValue(
                     PlayerEvent.ShowToast(
@@ -130,7 +130,7 @@ class PlayerViewModel(
             }
             is PlayerState.Prepared -> startPlayer()
             is PlayerState.Completed -> {
-                preparePlayer()
+                replayPlayer()
             }
             else -> {}
         }
@@ -177,7 +177,6 @@ class PlayerViewModel(
     private fun pausePlayer() {
         pauseTimer()
         playerInteractor.pausePlayer()
-        pauseTimer()
         updateUiState { it.copy(
             playerState = PlayerState.Paused(
                 currentTime = getCurrentPlayerPosition(),
@@ -191,6 +190,21 @@ class PlayerViewModel(
             return
         }
         playerInteractor.preparePlayer(track.previewUrl)
+    }
+
+    private fun replayPlayer() {
+        playerInteractor.replay()
+
+        updateUiState {
+            it.copy(
+                playerState = PlayerState.Playing(
+                    currentTime = getCurrentPlayerPosition(),
+                    isFavourite = track.isFavourite
+                )
+            )
+        }
+
+        startTimerUpdate()
     }
 
     //устанока времени таймера воспроизведения

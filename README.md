@@ -1,114 +1,101 @@
-<h1>🎵 PlaylistMaker — Музыкальный плеер и поиск треков</h1>
+# 🎵 PlaylistMaker
 
-<p>
-Android-приложение для поиска и воспроизведения музыки через iTunes API.<br>
-Проект демонстрирует работу с Clean Architecture, MVVM, MediaPlayer и REST API.
+Android-приложение для поиска и прослушивания треков через **iTunes Search API**, возможностью сохранять треки в Избранные и пользовательские плейлисты. Проект построен на Clean Architecture и MVVM.
+
+## Скриншоты
+
+<p align="center">
+  <img src="screenshots/search_screen.png" width="200" alt="Экран поиска" />
+  <img src="screenshots/track_screen.png" width="200" alt="Экран воспроизведения трека" />
+  <img src="screenshots/media_library_screen.png" width="200" alt="Медиатека" />
+  <img src="screenshots/settings_screen.png" width="200" alt="Настройки" />
 </p>
 
-<h2>📸 Скриншоты</h2>
+## Основные возможности
 
-<p>
-<img src="screenshots/search_screen.png" width="250"/>
-<img src="screenshots/track_screen.png" width="250"/>
-<img src="screenshots/media_library_screen.png" width="250"/>
-<img src="screenshots/settings_screen.png" width="250"/>
-</p>
+### Поиск и воспроизведение
+- Поиск треков через iTunes Search API (Retrofit) с debounce для ограничения частоты запросов
+- Предпрослушивание аудиофрагментов через MediaPlayer, отображение информации о треке
+- История поиска в SharedPreferences
 
-<h2>🚀 Основной функционал</h2>
-<ul>
-  <li><b>Поиск треков</b> — поиск музыки через iTunes API с debounce-защитой</li>
-  <li><b>Воспроизведение</b> — аудиоплеер с управлением (play/pause) и таймером</li>
-  <li><b>История поиска</b> — сохранение треков через SharedPreferences</li>
-  <li><b>Настройки</b> — поддержка и пользовательское соглашение, возможность поделиться приложением, переключение темы</li>
-</ul>
+### Медиатека
+- Избранное: добавление и удаление треков (Room)
+- Пользовательские плейлисты: создание, редактирование названия, описания и обложки, удаление
+- Добавление и удаление треков в плейлистах, подсчёт общей продолжительности
+- Шаринг плейлиста в виде текстового списка треков
 
-<h2>🏗 Архитектура</h2>
+### Настройки и навигация
+- Светлая и тёмная тема
+- Навигация между разделами: Navigation Component, BottomNavigationView, ViewPager2, TabLayout
+- Пользовательское соглашение, обращение в поддержку, шаринг приложения
 
-<p>
-Приложение построено с использованием <b>Clean Architecture</b> и <b>MVVM</b>.
-</p>
+## Архитектура
 
-<h3>Data Layer</h3>
-<ul>
-  <li>Работа с iTunes API (Retrofit)</li>
-  <li>AudioPlayerClient — обёртка над MediaPlayer</li>
-  <li>StorageClient — SharedPreferences</li>
-  <li>DTO - Domain преобразование</li>
-</ul>
+В проекте используется **Clean Architecture** в сочетании с **MVVM**.
 
-<h3>Domain Layer</h3>
-<ul>
-  <li>UseCases / Interactors</li>
-  <li>Бизнес-логика плеера и поиска</li>
-  <li>Независимость от Android SDK</li>
-</ul>
+Приложение разделено на три основных слоя:
 
-<h3>Presentation Layer</h3>
-<ul>
-  <li>ViewModel + LiveData</li>
-  <li>Activity / Fragment</li>
-  <li>State-модели</li>
-</ul>
+- **Data Layer** — сетевые запросы через Retrofit, локальная база данных Room, SharedPreferences, файловое хранилище обложек и взаимодействие с MediaPlayer.
+- **Domain Layer** — модели предметной области, интерфейсы репозиториев и интеракторы, содержащие бизнес-логику.
+- **Presentation Layer** — Activity, Fragment, ViewModel, LiveData и модели состояний интерфейса.
 
-<h2>🛠 Технологии</h2>
+Зависимости внедряются через Koin, за изменениями данных в Room следят Flow.
 
-<ul>
-  <li>Kotlin</li>
-  <li>Android SDK (minSdk 29)</li>
-  <li>Clean Architecture + MVVM</li>
-  <li>Retrofit 2</li>
-  <li>Koin (DI)</li>
-  <li>Glide</li>
-  <li>MediaPlayer</li>
-  <li>Firebase Crashlytics</li>
-</ul>
+Подробнее: [Архитектура приложения](docs/architecture.md)
 
-<h2>🧠 Ключевые паттерны</h2>
-<ul>
-  <li>Debounce (поиск — 2000 мс, клики — 1000 мс)</li>
-  <li>Observer Pattern (LiveData)</li>
-  <li>Repository Pattern</li>
-  <li>Dependency Injection (Koin)</li>
-  <li>Strategy Pattern (переключение темы)</li>
-</ul>
+## Технологии
 
-<h2>🎓 Полученные навыки</h2>
-<ul>
-  <li>Проектирование приложения с Clean Architecture</li>
-  <li>Работа с REST API (Retrofit, iTunes API)</li>
-  <li>Реализация аудиоплеер (MediaPlayer)</li>
-  <li>Управление состоянием через MVVM</li>
-  <li>Использование Dependency Injection</li>
-  <li>Работа с локальным хранилищем (SharedPreferences)</li>
-  <li>Оптимизация UX (debounce, состояния)</li>
-  <li>Реализыция тёмную тему</li>
-</ul>
+| Категория | Инструменты |
+|---|---|
+| Язык и платформа | Kotlin, Android SDK |
+| Минимальная версия Android | minSdk 29 |
+| UI | XML, ViewBinding, Activity, Fragment |
+| Навигация | Navigation Component, BottomNavigationView, ViewPager2, TabLayout |
+| Архитектура | Clean Architecture, MVVM |
+| Управление состоянием | ViewModel, LiveData |
+| Асинхронность | Kotlin Coroutines, Flow |
+| Сеть | Retrofit 2, Gson, REST API, iTunes Search API |
+| Локальное хранение | Room, SQLite, SharedPreferences |
+| Воспроизведение | MediaPlayer |
+| Dependency Injection | Koin |
+| Работа с изображениями | Glide |
+| Мониторинг ошибок | Firebase Crashlytics |
 
-<h2>🚧 В планах</h2>
-<ul>
-  <li><b>BottomNavigationView</b> — улучшение навигации между основными разделами приложения</li>
-  <li><b>Локальная база данных (Room)</b> — добавление избранных треков и создание пользовательских плейлистов</li>
-</ul>
+## Сборка и запуск
 
-<h2>▶️ Сборка и запуск</h2>
+1. Клонируйте репозиторий и перейдите на ветку `dev`:
 
-<pre>
-<code>
-# Клонирование
-git clone &lt;repository-url&gt;
-cd PlaylistMaker
+   ```bash
+   git clone -b dev https://github.com/bezFantazee/PlaylistMaker.git
+   cd PlaylistMaker
+   ```
 
-# Сборка
-./gradlew assembleDebug
+2. Откройте проект в Android Studio и дождитесь завершения Gradle Sync.
 
-# Установка
-./gradlew installDebug
-</code>
-</pre>
+3. Соберите Debug-версию:
 
-<h2>📌 Назначение проекта</h2>
+   **Linux / macOS**
+   ```bash
+   ./gradlew assembleDebug
+   ```
 
-<p>
-Учебный проект для демонстрации навыков Android-разработки,<br>
-архитектуры, работы с API и мультимедиа.
-</p>
+   **Windows**
+   ```bat
+   gradlew.bat assembleDebug
+   ```
+
+4. Для установки на подключённое устройство или запущенный эмулятор:
+
+   **Linux / macOS**
+   ```bash
+   ./gradlew installDebug
+   ```
+
+   **Windows**
+   ```bat
+   gradlew.bat installDebug
+   ```
+
+## Планы развития
+
+Текущие идеи по развитию приложения собраны в [Roadmap](docs/roadmap.md). В частности, рассматриваются улучшение навигации и расширение возможностей медиатеки.

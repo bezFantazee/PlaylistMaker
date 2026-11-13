@@ -5,10 +5,10 @@ Android-приложение для поиска и прослушивания �
 ## Скриншоты
 
 <p align="center">
-  <img src="screenshots/search_screen.png" width="200" alt="Экран поиска" />
-  <img src="screenshots/track_screen.png" width="200" alt="Экран воспроизведения трека" />
-  <img src="screenshots/media_library_screen.png" width="200" alt="Медиатека" />
-  <img src="screenshots/settings_screen.png" width="200" alt="Настройки" />
+  <img src="screenshots/search_screen.png" width="150" alt="Экран поиска" />
+  <img src="screenshots/track_screen.png" width="150" alt="Экран воспроизведения трека" />
+  <img src="screenshots/media_library_screen.png" width="150" alt="Медиатека" />
+  <img src="screenshots/settings_screen.png" width="150" alt="Настройки" />
 </p>
 
 ## Основные возможности
